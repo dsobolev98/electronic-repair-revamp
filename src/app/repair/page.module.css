@@ -1,0 +1,25 @@
+.button-row-container {
+    max-width: 545px;;
+    margin: auto auto;
+    padding: 50px;
+
+    display: flex;
+    flex-direction: row;
+    /* flex-wrap: wrap; */
+    justify-content: space-between;
+}
+
+.button-row-container .button {
+    max-width: 100px;
+    max-height: 40px;
+    padding: 10px 25px;
+    /* margin: auto; */
+    background-color: #2c6fbb;
+    
+    text-align: center;
+    font-size: 15px;
+
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+}
