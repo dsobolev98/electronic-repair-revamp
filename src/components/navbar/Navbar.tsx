@@ -4,7 +4,7 @@ import styles from './navbar.module.css'
 
 function Navbar() {
   return (
-    <div className={styles.container}>
+    <nav className={styles.container}>
       <Link className={styles.logo} href="/">Electronic-repair-revamp</Link>
       <div className={styles.links}>
         <Link href="/about">About</Link>
@@ -13,7 +13,7 @@ function Navbar() {
         <Link href="/dashboard/status">Status</Link>
         <Link href="/contact">Contact</Link>
       </div>
-    </div>
+    </nav>
   )
 }
 
