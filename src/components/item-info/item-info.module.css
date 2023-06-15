@@ -1,0 +1,36 @@
+.container
+{
+    max-width: 545px;
+    /* min-height: 75vh; */
+    margin: auto auto;
+
+    /* background-color: blue; */
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px 20px;
+}
+
+.form {
+    max-width: 500px;
+    margin: auto;
+}
+
+.form-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* .form-item .form-label {
+    padding: 5px;
+} */
+
+.form-item .form-text-input {
+    width: 500px;
+    margin: auto;
+    height: 40px;
+}

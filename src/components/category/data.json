@@ -1,0 +1,29 @@
+{
+    "Category": [    
+        {
+            "id": 1,
+            "Name": "Camera",
+            "Photo": ""
+        },
+        {
+            "id": 2,
+            "Name": "Drone",
+            "Photo": ""
+        },
+        {
+            "id": 3,
+            "Name": "Phone",
+            "Photo": ""
+        },
+        {
+            "id": 4,
+            "Name": "Computer",
+            "Photo": ""
+        },
+        {
+            "id": 5,
+            "Name": "Television",
+            "Photo": ""
+        }
+    ]
+}
