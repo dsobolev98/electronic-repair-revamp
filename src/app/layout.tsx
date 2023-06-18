@@ -1,6 +1,7 @@
 import Navbar from '@/components/navbar/Navbar'
 import Footer from '@/components/footer/Footer'
 import LoadingBar from '@/components/loading-bar/Loading-Bar'
+import { Providers } from '@/redux/providers'
 
 import './globals.css'
 import { Inter } from 'next/font/google'
@@ -21,10 +22,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="container">
-          <LoadingBar/>
-          <Navbar/>
-          {children}
-          <Footer/>
+          <Providers>
+            <LoadingBar/>
+            <Navbar/>
+            {children}
+            <Footer/>
+          </Providers>
         </div>
       </body>
     </html>
