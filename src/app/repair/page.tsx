@@ -4,21 +4,19 @@ import { StepEnum } from '@/utils/steps'
 import ItemInfo from '@/components/collect-info/item-info/ItemInfo'
 import PersonalInfo from '@/components/collect-info/personal-info/PersonalInfo'
 import styles from './page.module.css'
+import { useEffect } from 'react'
 
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { useDispatch } from 'react-redux'
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { store } from '@/redux/store'
 import { setInitialStep } from '@/redux/slices/stepSlice'
-import $ from 'jquery'
 import ApplicationResult from '@/components/collect-info/application-result/ApplicationResult'
 
 function Repair() {
+  useEffect(() => {
+    store.dispatch(setInitialStep());
+  }, []);
 
-  /* $(document).load(function(){
-    store.dispatch(setInitialStep())
-  }) */
-  
-  const step = useAppSelector((state:any) => state.step.step );
+  const step = useAppSelector((state:any) => state.step.step);
 
   return (
     <div>
