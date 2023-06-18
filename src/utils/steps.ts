@@ -2,7 +2,8 @@ module Step {
     export enum StepEnum {
         Category,
         ItemInfo,
-        PersonalInfo
+        PersonalInfo,
+        ApplicationResult
     }
 
     export function GetNextStep(currentStep: StepEnum): StepEnum | null {
@@ -11,6 +12,8 @@ module Step {
                 return StepEnum.ItemInfo;
             case StepEnum.ItemInfo:
                 return StepEnum.PersonalInfo;
+            case StepEnum.PersonalInfo:
+                return StepEnum.ApplicationResult;
             default:
                 null;
         }
@@ -23,6 +26,8 @@ module Step {
                 return StepEnum.Category;
             case StepEnum.PersonalInfo:
                 return StepEnum.ItemInfo;
+            case StepEnum.ApplicationResult:
+                return StepEnum.PersonalInfo;
             default:
                 null;
         }
@@ -30,4 +35,5 @@ module Step {
     }
 }
 
+export const { StepEnum } = Step
 export default Step
