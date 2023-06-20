@@ -34,3 +34,21 @@
     margin: auto;
     height: 40px;
 }
+
+.button {
+    max-width: 100px;
+    max-height: 40px;
+    padding: 10px auto;
+    /* margin: auto; */
+    background-color: lightgreen;
+    
+    text-align: center;
+    font-size: 15px;
+
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+
+    display: flex;
+    flex-wrap: nowrap;
+}

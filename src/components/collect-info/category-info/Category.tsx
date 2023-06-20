@@ -7,17 +7,21 @@ import { store } from '@/redux/store';
 import { setStep } from '@/redux/slices/stepSlice';
 import { setCategory } from '@/redux/slices/infoSlice';
 
-export default function Category(/* {
-    setStep,
-    handleCategory
+export default function Category({
+    itemUId
   }:{
-    setStep: any,
-    handleCategory: any
-  } */) {
+    itemUId: string
+  }) {
 
   function categoryClicked(event:any) {
-    console.log(event.target.value);
-    store.dispatch(setCategory(event.target.value));
+    let categorySelected: any = {
+      key: itemUId,
+      category: event.target.value
+    }
+
+    console.log(categorySelected.category)
+    store.dispatch(setCategory(categorySelected));
+    
     let nextStep = Step.GetNextStep(Step.StepEnum.Category);
     if (nextStep){
       store.dispatch(setStep(nextStep));
