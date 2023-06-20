@@ -32,7 +32,7 @@ export default function ItemInfo({
   }
 
   const data = Object.entries(itemInfoConfig).map(([field, config]) => config.isEditable == true && 
-    <div className={styles["form-item"]}>
+    <div className={styles["form-item"]} key={config.id}>
       <label htmlFor={config.id} className={styles["form-label"]}>{config.label}</label>
       <input 
         id={config.id}  
