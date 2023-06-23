@@ -13,7 +13,7 @@ export type ItemInfo  = {
 export type ItemDictionary = Record<string, ItemInfo>
 
 export type ItemInfoConfig = {
-    [K in keyof Omit<ItemInfo, typeof ItemKeys.CATEGORY>]: {
+    [K in keyof Omit<ItemInfo, ''> as string]: {
       id: string,
       isEditable: boolean;
       label: string;
@@ -21,6 +21,11 @@ export type ItemInfoConfig = {
   };
   
 export const itemInfoConfig: ItemInfoConfig = {
+    [ItemKeys.CATEGORY]: {
+        id: ItemKeys.CATEGORY,
+        isEditable: false,
+        label: 'Category',
+    },
     [ItemKeys.BRAND]: {
       id: ItemKeys.BRAND,
       isEditable: true,
@@ -30,5 +35,5 @@ export const itemInfoConfig: ItemInfoConfig = {
         id: ItemKeys.MODEL,
         isEditable: true,
         label: 'Model',
-    },
+    }
 };

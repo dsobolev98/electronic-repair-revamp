@@ -42,6 +42,10 @@ const infoSlice = createSlice({
                 state.item[key].category = category;
             }
         },
+        setCurrentItemId: (state, action: PayloadAction<string>) => {
+            console.log(action.payload)
+            state.currentItemUId = action.payload;
+        },
         setItem: (state, action: PayloadAction<{key: string, item: ItemInfo}>) => {
             const {key, item} = action.payload;
             if (state.item != undefined && state.item[key])
@@ -77,5 +81,15 @@ const infoSlice = createSlice({
     }
 });
 
-export const { setInitialItem, setEmptyItem, setCategory, setItem, updateItemField, setPersonal, updatePersonalField } = infoSlice.actions;
+export const { 
+    setInitialItem, 
+    setEmptyItem, 
+    setCategory, 
+    setCurrentItemId,
+    setItem, 
+    updateItemField, 
+    setPersonal, 
+    updatePersonalField 
+} = infoSlice.actions;
+
 export default infoSlice.reducer;

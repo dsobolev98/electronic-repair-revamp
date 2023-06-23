@@ -5,6 +5,7 @@ import Category from '@/components/collect-info/category-info/Category'
 import ItemInfo from '@/components/collect-info/item-info/ItemInfo'
 import PersonalInfo from '@/components/collect-info/personal-info/PersonalInfo'
 import ApplicationResult from '@/components/collect-info/application-result/ApplicationResult'
+import ConfirmInfo from '@/components/collect-info/confirm-info/ConfirmInfo'
 import styles from './page.module.css'
 
 import { useEffect, useState } from 'react'
@@ -39,6 +40,7 @@ function Repair() {
       {step == StepEnum.Category && <Category itemUId={currentItemUId}/>}
       {step == StepEnum.ItemInfo && <ItemInfo itemUId={currentItemUId}/>}
       {step == StepEnum.PersonalInfo && <PersonalInfo/>}
+      {step == StepEnum.ConfirmInfo && <ConfirmInfo/>}
       {step == StepEnum.ApplicationResult && <ApplicationResult/>}
     </div>
   )

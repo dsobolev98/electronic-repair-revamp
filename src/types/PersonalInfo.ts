@@ -25,7 +25,7 @@ export interface PersonalInfo {
 }
 
 export type PersonalInfoConfig = {
-    [K in keyof Omit<PersonalInfo, ''>]: {
+    [K in keyof Omit<PersonalInfo, ''> as string]: {
       id: string,
       isEditable: boolean;
       label: string;
