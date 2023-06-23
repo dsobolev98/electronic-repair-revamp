@@ -1,5 +1,3 @@
-import PersonalInfo from "@/components/collect-info/personal-info/PersonalInfo";
-
 module Step {
     export enum StepEnum {
         Category,
