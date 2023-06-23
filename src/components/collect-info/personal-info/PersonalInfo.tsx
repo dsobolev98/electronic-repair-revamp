@@ -1,10 +1,12 @@
 import styles from './personal-info.module.css'
 import Navigation from '../navigation/Navigation'
-import { personalInfoConfig } from '@/types/PersonalInfo'
+import { PersonalInfo, personalInfoConfig } from '@/types/PersonalInfo'
 import { store } from '@/redux/store'
 import { updatePersonalField } from '@/redux/slices/infoSlice'
+import { useAppSelector } from '@/redux/hooks'
 
 export default function PersonalInfo() {
+    const personal = useAppSelector((state) => state.info.personal as PersonalInfo);
 
     function changeHandler(event: any) {
         const { name, value } = event.target
@@ -14,14 +16,15 @@ export default function PersonalInfo() {
         }))
     }
 
-    const data = Object.entries(personalInfoConfig).map(([field, config]) => config.isEditable == true && 
-        <div className={styles["form-item"]} key={config.id}>
-        <label htmlFor={config.id} className={styles["form-label"]}>{config.label}</label>
+    const data = Object.entries(personal).map(([field, value]) => personalInfoConfig[field].isEditable == true && 
+        <div className={styles["form-item"]} key={personalInfoConfig[field].id}>
+        <label htmlFor={personalInfoConfig[field].id} className={styles["form-label"]}>{personalInfoConfig[field].label}</label>
         <input 
-            id={config.id}  
-            name={config.id} 
+            id={personalInfoConfig[field].id}  
+            name={personalInfoConfig[field].id} 
             type="text" 
             className={styles["form-text-input"]} 
+            value={value}
             required 
             onChange={changeHandler} 
         />

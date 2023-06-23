@@ -15,7 +15,7 @@ export default function ItemInfo({
 }:{
   itemUId: string
 }) {
-  const category = useAppSelector((state) => state.info.item[itemUId].category);
+  const item = useAppSelector((state:any) => state.info.item[itemUId] as ItemInfo);
 
   function additionalDevice(event:any) {
     store.dispatch(setInitialItem())
@@ -31,14 +31,15 @@ export default function ItemInfo({
       }))
   }
 
-  const data = Object.entries(itemInfoConfig).map(([field, config]) => config.isEditable == true && 
-    <div className={styles["form-item"]} key={config.id}>
-      <label htmlFor={config.id} className={styles["form-label"]}>{config.label}</label>
+  const data = Object.entries(item).map(([field, value]) => itemInfoConfig[field].isEditable == true && 
+    <div className={styles["form-item"]} key={itemInfoConfig[field].id}>
+      <label htmlFor={itemInfoConfig[field].id} className={styles["form-label"]}>{itemInfoConfig[field].label}</label>
       <input 
-        id={config.id}  
-        name={config.id} 
+        id={itemInfoConfig[field].id}  
+        name={itemInfoConfig[field].id} 
         type="text" 
         className={styles["form-text-input"]} 
+        value={value}
         required 
         onChange={changeHandler} 
       />
@@ -48,7 +49,7 @@ export default function ItemInfo({
   return (
     <div>
       <div className={styles.container}>
-          <h1>Tell Us More About Your {category}</h1>
+          <h1>Tell Us More About Your {item.category}</h1>
           <div className={styles.form}>
               {data}
           </div>
