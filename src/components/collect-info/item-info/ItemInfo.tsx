@@ -3,6 +3,7 @@
 import React from 'react'
 import styles from './item-info.module.css'
 import Navigation from '../navigation/Navigation'
+import Validation from '../validation/Validation'
 import { ItemInfo, ItemInfo as ItemInfoType, itemInfoConfig } from '@/types/ItemInfo'
 
 import { store } from '@/redux/store'
@@ -16,6 +17,7 @@ export default function ItemInfo({
   itemUId: string
 }) {
   const item = useAppSelector((state:any) => state.info.item[itemUId] as ItemInfo);
+  const errorList = useAppSelector((state:any) => state.validation.errorItemList as Array<string>)
 
   function additionalDevice(event:any) {
     store.dispatch(setInitialItem())
@@ -33,13 +35,18 @@ export default function ItemInfo({
 
   const data = Object.entries(item).map(([field, value]) => itemInfoConfig[field].isEditable == true && 
     <div className={styles["form-item"]} key={itemInfoConfig[field].id}>
-      <label htmlFor={itemInfoConfig[field].id} className={styles["form-label"]}>{itemInfoConfig[field].label}</label>
+      <label 
+        htmlFor={itemInfoConfig[field].id} 
+        className={`${styles["form-label"]} ${errorList.includes(field) ? styles["form-label-error"] : ''}`}
+      >
+          {itemInfoConfig[field].label}
+      </label>
       <input 
         id={itemInfoConfig[field].id}  
         name={itemInfoConfig[field].id} 
         type="text" 
-        className={styles["form-text-input"]} 
-        value={value}
+        className={`${styles["form-text-input"]}  ${errorList.includes(field) ? styles["form-text-input-error"] : ''}`}
+        value={value ?? ''}
         required 
         onChange={changeHandler} 
       />
@@ -49,6 +56,7 @@ export default function ItemInfo({
   return (
     <div>
       <div className={styles.container}>
+          <Validation />
           <h1>Tell Us More About Your {item.category}</h1>
           <div className={styles.form}>
               {data}
@@ -61,7 +69,9 @@ export default function ItemInfo({
             Add Another Device
           </button>
       </div>
-      <Navigation/>
+      <Navigation 
+        validate={true}
+      />
     </div>
   )
 }

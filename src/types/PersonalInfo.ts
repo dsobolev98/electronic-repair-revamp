@@ -1,3 +1,5 @@
+import Step, { StepEnum } from "@/utils/steps";
+
 export const PersonalKeys = {
     FIRSTNAME: 'firstname',
     LASTNAME: 'lastname',
@@ -27,59 +29,84 @@ export interface PersonalInfo {
 export type PersonalInfoConfig = {
     [K in keyof Omit<PersonalInfo, ''> as string]: {
       id: string,
-      isEditable: boolean;
-      label: string;
+      label: string,
+      isEditable: boolean,
+      displayOnStep: Step.StepEnum,
+      validationRegex?: string,
+      validationMessage?: string
     }
   };
   
 export const personalInfoConfig: PersonalInfoConfig = {
     [PersonalKeys.FIRSTNAME]: {
       id: PersonalKeys.FIRSTNAME,
-      isEditable: true,
       label: 'First Name',
+      displayOnStep: StepEnum.PersonalInfo,
+      isEditable: true,
+      validationRegex: "^[A-Za-z ,.'-]+$",
+      validationMessage: "Please enter a valid first name"
     },
     [PersonalKeys.LASTNAME]: {
         id: PersonalKeys.LASTNAME,
-        isEditable: true,
         label: 'Last Name',
+        displayOnStep: StepEnum.PersonalInfo,
+        isEditable: true,
+        validationRegex: "^[A-Za-z ,.'-]+$",
+        validationMessage: "Please enter a valid last name"
     },
     [PersonalKeys.MIDDLENAME]: {
         id: PersonalKeys.MIDDLENAME,
-        isEditable: true,
         label: 'Middle Name',
+        displayOnStep: StepEnum.PersonalInfo,
+        isEditable: true,
+        validationRegex: "^[A-Za-z ,.'-]+$",
+        validationMessage: "Please enter a valid middle name"
     },
     [PersonalKeys.EMAIL]: {
         id: PersonalKeys.EMAIL,
-        isEditable: true,
         label: 'Email',
+        displayOnStep: StepEnum.PersonalInfo,
+        isEditable: true,
+        validationRegex: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+        validationMessage: "Please enter a valid email address"
     },
 
 
     [PersonalKeys.ADDRESSLINE]: {
         id: PersonalKeys.ADDRESSLINE,
-        isEditable: true,
         label: 'Address',
+        displayOnStep: StepEnum.PersonalInfo,
+        isEditable: true,
+        validationRegex: "^\\d+\\s[A-Za-z\\s]+$"//validate via an API 
     },
     [PersonalKeys.CITY]: {
         id: PersonalKeys.CITY,
-        isEditable: true,
         label: 'City',
+        displayOnStep: StepEnum.PersonalInfo,
+        isEditable: true,
+        validationRegex: "^[A-Za-z\\s]+$"
     },
     [PersonalKeys.STATE]: {
         id: PersonalKeys.STATE,
-        isEditable: true,
         label: 'State',
+        displayOnStep: StepEnum.PersonalInfo,
+        isEditable: true,
+        validationRegex: "^[A-Z]{2}$"
     },
     [PersonalKeys.ZIPCODE]: {
         id: PersonalKeys.ZIPCODE,
-        isEditable: true,
         label: 'Zipcode',
+        displayOnStep: StepEnum.PersonalInfo,
+        isEditable: true,
+        validationRegex: "^\\d{5}$"
     },
 
     [PersonalKeys.TELEPHONE]: {
         id: PersonalKeys.TELEPHONE,
-        isEditable: true,
         label: 'Telephone number',
+        displayOnStep: StepEnum.PersonalInfo,
+        isEditable: true,
+        validationRegex: "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$"
     },
 };
 

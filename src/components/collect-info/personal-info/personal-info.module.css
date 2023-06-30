@@ -29,8 +29,20 @@
     padding: 5px;
 } */
 
+.form-item .form-label-error {
+    color: red;
+}
+
 .form-item .form-text-input {
     width: 500px;
     margin: auto;
     height: 40px;
+
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.form-item .form-text-input-error {
+    border: 2px solid red;
+    border-radius: 10px;
 }

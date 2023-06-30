@@ -7,6 +7,8 @@ import { store } from '@/redux/store';
 import { setStep } from '@/redux/slices/stepSlice';
 import { setCategory } from '@/redux/slices/infoSlice';
 
+import $ from 'jquery'
+
 export default function Category({
     itemUId
   }:{
@@ -27,6 +29,15 @@ export default function Category({
       store.dispatch(setStep(nextStep));
     }
   }
+
+  window.onload = () => {
+    console.log(styles.container)
+    $(`.${styles.container}`).addClass(styles["disable-buttons"])
+  }
+
+  $(document).ready(() => {
+    $(`.${styles.container}`).removeClass(styles["disable-buttons"])
+  })
 
   const data = CategoryInfo.Category;
   

@@ -29,3 +29,7 @@
 
     flex-grow: 1;
 }
+
+.disable-buttons .button{
+    background-color: gray;
+}

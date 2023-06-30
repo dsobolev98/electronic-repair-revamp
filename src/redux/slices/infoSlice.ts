@@ -1,8 +1,9 @@
 import { ItemDictionary, ItemInfo } from '@/types/ItemInfo';
 import { PersonalInfo, newPersonalInfoInstance } from '@/types/PersonalInfo';
-import Step from '@/utils/steps'
+
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit' 
+
 import { v4 } from 'uuid';
 
 export interface infoState {

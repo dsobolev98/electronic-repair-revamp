@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import infoReducer from "./slices/infoSlice"
 import stepReducer from "./slices/stepSlice"
+import validationReducer from "./slices/validationSlice"
 
 export const store = configureStore({
     reducer: {
         info: infoReducer,
-        step: stepReducer
+        step: stepReducer,
+        validation: validationReducer
     }
 })
 

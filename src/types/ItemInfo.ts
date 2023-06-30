@@ -1,3 +1,5 @@
+import Step, { StepEnum } from "@/utils/steps";
+
 export const ItemKeys = {
     CATEGORY: 'category',
     BRAND: 'brand',
@@ -15,25 +17,36 @@ export type ItemDictionary = Record<string, ItemInfo>
 export type ItemInfoConfig = {
     [K in keyof Omit<ItemInfo, ''> as string]: {
       id: string,
-      isEditable: boolean;
-      label: string;
+      label: string,
+      displayOnStep: Step.StepEnum,
+      isEditable: boolean,
+      validationRegex?: string,
+      validationMessage?: string
     }
   };
   
 export const itemInfoConfig: ItemInfoConfig = {
     [ItemKeys.CATEGORY]: {
         id: ItemKeys.CATEGORY,
-        isEditable: false,
         label: 'Category',
+        displayOnStep: StepEnum.Category,
+        isEditable: false,
+
     },
     [ItemKeys.BRAND]: {
       id: ItemKeys.BRAND,
-      isEditable: true,
       label: 'Brand',
+      displayOnStep: StepEnum.ItemInfo,
+      isEditable: true,
+      validationRegex: "^[A-Za-z0-9 ]+$",
+      validationMessage: "Please enter a valid brand"
     },
     [ItemKeys.MODEL]: {
         id: ItemKeys.MODEL,
-        isEditable: true,
         label: 'Model',
+        displayOnStep: StepEnum.ItemInfo,
+        isEditable: true,
+        validationRegex: "^[A-Za-z0-9 ]+$",
+        validationMessage: "Please enter a valid model"
     }
 };
