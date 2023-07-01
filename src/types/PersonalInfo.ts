@@ -77,28 +77,32 @@ export const personalInfoConfig: PersonalInfoConfig = {
         label: 'Address',
         displayOnStep: StepEnum.PersonalInfo,
         isEditable: true,
-        validationRegex: "^\\d+\\s[A-Za-z\\s]+$"//validate via an API 
+        validationRegex: "^\\d+\\s[A-Za-z\\s]+$", //validate via an API 
+        validationMessage: "Please enter a valid address"
     },
     [PersonalKeys.CITY]: {
         id: PersonalKeys.CITY,
         label: 'City',
         displayOnStep: StepEnum.PersonalInfo,
         isEditable: true,
-        validationRegex: "^[A-Za-z\\s]+$"
+        validationRegex: "^[A-Za-z\\s]+$",
+        validationMessage: "Please enter a valid city"
     },
     [PersonalKeys.STATE]: {
         id: PersonalKeys.STATE,
         label: 'State',
         displayOnStep: StepEnum.PersonalInfo,
         isEditable: true,
-        validationRegex: "^[A-Z]{2}$"
+        validationRegex: "^[A-Z]{2}$",
+        validationMessage: "Please enter a valid state ex. NY"
     },
     [PersonalKeys.ZIPCODE]: {
         id: PersonalKeys.ZIPCODE,
         label: 'Zipcode',
         displayOnStep: StepEnum.PersonalInfo,
         isEditable: true,
-        validationRegex: "^\\d{5}$"
+        validationRegex: "^\\d{5}$",
+        validationMessage: "Please enter a valid zip code ex. 12345"
     },
 
     [PersonalKeys.TELEPHONE]: {
@@ -106,7 +110,8 @@ export const personalInfoConfig: PersonalInfoConfig = {
         label: 'Telephone number',
         displayOnStep: StepEnum.PersonalInfo,
         isEditable: true,
-        validationRegex: "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$"
+        validationRegex: "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$",
+        validationMessage: "Please enter a valid telephone number ex. XXX-XXX-XXXX"
     },
 };
 
