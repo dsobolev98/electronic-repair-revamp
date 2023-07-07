@@ -5,20 +5,15 @@ import Step, { StepEnum } from '@/utils/steps'
 import { store } from '@/redux/store';
 import { setStep } from '@/redux/slices/stepSlice';
 import { useAppSelector } from '@/redux/hooks';
-import { ItemDictionary, ItemInfo, itemInfoConfig } from '@/types/ItemInfo';
-import { PersonalInfo, personalInfoConfig } from '@/types/PersonalInfo';
-import { current } from '@reduxjs/toolkit';
-import { IsModelValid } from '@/utils/validation';
-import { setInitialValidation } from '@/redux/slices/validationSlice';
 
 export default function Navigation({
     displayBackStep = true,
     displayNextStep = true,
-    validate = false
+    customNextFunction = undefined, 
 }:{
     displayBackStep?: boolean,
     displayNextStep?: boolean,
-    validate?: boolean
+    customNextFunction?: Function
 }) {
     const step = useAppSelector((state:any) => state.step.step as Step.StepEnum)
 
@@ -29,26 +24,14 @@ export default function Navigation({
         }
     }
     
-    function handleNextStep(){
-        if (validate){
-            store.dispatch(setInitialValidation())
-
-            if(step == StepEnum.ItemInfo) {
-                const currentItem = store.getState().info.currentItemUId
-                const itemInfoData = store.getState().info.item[currentItem]
-
-                if(!IsModelValid(itemInfoData, itemInfoConfig, step))
-                    return;
-            }
-            else if(step == StepEnum.PersonalInfo) {
-                const personalInfoData = store.getState().info.personal
-
-                if(!IsModelValid(personalInfoData, personalInfoConfig, step))
-                    return;
-            }
+    async function handleNextStep(){
+        if(customNextFunction !== undefined && customNextFunction !== null) {
+            let result: boolean = await customNextFunction()
+            if (result === false) 
+                return;
         }
 
-        let nextStep = Step.GetNextStep(step);
+        let nextStep = await Step.GetNextStep(step);
         if (nextStep != null) {
             store.dispatch(setStep(nextStep));
         }

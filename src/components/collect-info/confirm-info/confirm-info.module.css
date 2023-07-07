@@ -32,6 +32,10 @@
     border-radius: 4px;
     padding: 1em;
     margin: 0.5em 0;
+
+    max-width: fit-content;
+    min-width: 100px;
+    min-height: 100px;
 }
 
 .box h3 {
@@ -45,8 +49,12 @@
 
 .box div {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     width: 100%;
+}
+
+.edit-button {
+    justify-content: center;
 }
 
 .box li {
@@ -56,4 +64,15 @@
 .align-left {
     width: 545px;
     justify-content: left;
+}
+
+.item-list {
+    flex-direction: row;
+    justify-content: left;
+    margin: 0 auto 0 0;
+}
+
+.item-list li {
+    display: inline-flex;
+    margin: 10px;
 }

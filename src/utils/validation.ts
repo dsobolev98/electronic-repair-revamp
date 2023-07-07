@@ -8,16 +8,20 @@ import { addErrorDetail, addErrorItem } from "@/redux/slices/validationSlice";
 export function IsModelValid(
     model: ItemInfo | PersonalInfo,
     modelConfig: ItemInfoConfig | PersonalInfoConfig,
-    step: Step.StepEnum
+    step?: Step.StepEnum
 ): boolean {
     let isValid: boolean = true;
 
     Object.entries(model).forEach(([key, value]) => {
-        if (modelConfig[key].displayOnStep === step && modelConfig[key].isEditable) {
+        const skipStepBasedValidation = step === undefined;
+
+        if ((skipStepBasedValidation || modelConfig[key].displayOnStep === step)
+            && modelConfig[key].isEditable
+        ) {
             let regex: string = modelConfig[key]?.validationRegex ?? '';
             let valueNullButRequried = ((value == null || value == undefined) && modelConfig[key]?.validationRegex != undefined);
             
-            if (valueNullButRequried || !value.match(regex)) {
+            if (valueNullButRequried || !String(value).match(regex)) {
                 isValid = false;
                 store.dispatch(addErrorItem(key));
                 

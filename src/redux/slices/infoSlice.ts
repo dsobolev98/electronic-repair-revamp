@@ -2,7 +2,8 @@ import { ItemDictionary, ItemInfo } from '@/types/ItemInfo';
 import { PersonalInfo, newPersonalInfoInstance } from '@/types/PersonalInfo';
 
 import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit' 
+import { PayloadAction } from '@reduxjs/toolkit' 
+import { stat } from 'fs';
 
 import { v4 } from 'uuid';
 
@@ -23,7 +24,7 @@ const infoSlice = createSlice({
     name: "info",
     initialState,
     reducers: {
-        setInitialItem: (state) => {
+        setInitialItem: (state:any) => {
             const uuid = v4()
             const emptyItem: ItemInfo = {
                 category: '',
@@ -33,28 +34,32 @@ const infoSlice = createSlice({
             state.currentItemUId = uuid;
             state.item[uuid] = emptyItem;
         },
-        setEmptyItem: (state, action: PayloadAction<string>) => {
-            state.item[action.payload]
+        removeItem: (state:any, action: PayloadAction<string>) => {
+            const key = action.payload
+
+            delete state.item[key]
+            let newKey:string = Object.keys(state.item as ItemDictionary)[0]
+            state.currentItemUId = newKey;
         },
-        setCategory: (state, action: PayloadAction<{key: string, category: string}>) => {
+        setCategory: (state:any, action: PayloadAction<{key: string, category: string}>) => {
             const {key, category} = action.payload;
             if (state.item != undefined && state.item[key])
             {
                 state.item[key].category = category;
             }
         },
-        setCurrentItemId: (state, action: PayloadAction<string>) => {
+        setCurrentItemId: (state:any, action: PayloadAction<string>) => {
             console.log(action.payload)
             state.currentItemUId = action.payload;
         },
-        setItem: (state, action: PayloadAction<{key: string, item: ItemInfo}>) => {
+        setItem: (state:any, action: PayloadAction<{key: string, item: ItemInfo}>) => {
             const {key, item} = action.payload;
             if (state.item != undefined && state.item[key])
             {
                 state.item[key] = item;
             }
         },
-        updateItemField: (state, action: PayloadAction<{
+        updateItemField: (state:any, action: PayloadAction<{
             key: string, 
             field: keyof Omit<ItemInfo, 'category'>,
             value: string
@@ -65,11 +70,11 @@ const infoSlice = createSlice({
                 state.item[key][field] = value;
             }
         },
-        setPersonal: (state, action: PayloadAction<{key: string, personal: PersonalInfo}>) => {
+        setPersonal: (state:any, action: PayloadAction<{key: string, personal: PersonalInfo}>) => {
             const {key, personal} = action.payload;
             state.personal = personal;
         },
-        updatePersonalField: (state, action: PayloadAction<{
+        updatePersonalField: (state:any, action: PayloadAction<{
             field: keyof Omit<PersonalInfo, ''>,
             value: string
         }>) => {
@@ -84,7 +89,7 @@ const infoSlice = createSlice({
 
 export const { 
     setInitialItem, 
-    setEmptyItem, 
+    removeItem, 
     setCategory, 
     setCurrentItemId,
     setItem, 

@@ -4,19 +4,22 @@ import React from 'react'
 import styles from './item-info.module.css'
 import Navigation from '../navigation/Navigation'
 import Validation from '../validation/Validation'
-import { ItemInfo, ItemInfo as ItemInfoType, itemInfoConfig } from '@/types/ItemInfo'
+import { ItemInfo as ItemInfoType, itemInfoConfig } from '@/types/ItemInfo'
 
 import { store } from '@/redux/store'
 import { useAppSelector } from '@/redux/hooks'
 import { setInitialItem, updateItemField } from '@/redux/slices/infoSlice'
 import { setInitialStep } from '@/redux/slices/stepSlice'
+import { IsModelValid } from '@/utils/validation'
+import { setInitialValidation } from '@/redux/slices/validationSlice'
+import Step from '@/utils/steps'
 
 export default function ItemInfo({
   itemUId
 }:{
   itemUId: string
 }) {
-  const item = useAppSelector((state:any) => state.info.item[itemUId] as ItemInfo);
+  const item = useAppSelector((state:any) => state.info.item[itemUId] as ItemInfoType);
   const errorList = useAppSelector((state:any) => state.validation.errorItemList as Array<string>)
 
   function additionalDevice(event:any) {
@@ -33,7 +36,19 @@ export default function ItemInfo({
       }))
   }
 
-  const data = Object.entries(item).map(([field, value]) => itemInfoConfig[field].isEditable == true && 
+  function nextStepFunction(): boolean {
+    store.dispatch(setInitialValidation())
+    const step = store.getState().step.step as Step.StepEnum;
+    const currentItem = store.getState().info.currentItemUId as string;
+    const itemInfoData = store.getState().info.item[currentItem] as ItemInfoType;
+
+    if(!IsModelValid(itemInfoData, itemInfoConfig, step))
+        return false;
+
+    return true;
+  }
+
+  const data = Object.entries(item as ItemInfoType).map(([field, value]) => itemInfoConfig[field].isEditable == true && 
     <div className={styles["form-item"]} key={itemInfoConfig[field].id}>
       <label 
         htmlFor={itemInfoConfig[field].id} 
@@ -69,8 +84,8 @@ export default function ItemInfo({
             Add Another Device
           </button>
       </div>
-      <Navigation 
-        validate={true}
+      <Navigation
+        customNextFunction={nextStepFunction}
       />
     </div>
   )

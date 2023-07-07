@@ -1,13 +1,15 @@
 import styles from './personal-info.module.css'
 import Navigation from '../navigation/Navigation'
-import { PersonalInfo, personalInfoConfig } from '@/types/PersonalInfo'
+import { PersonalInfo, PersonalInfo as PersonalInfoType, personalInfoConfig } from '@/types/PersonalInfo'
 import { store } from '@/redux/store'
 import { updatePersonalField } from '@/redux/slices/infoSlice'
 import { useAppSelector } from '@/redux/hooks'
 import Validation from '../validation/Validation'
+import { setInitialValidation } from '@/redux/slices/validationSlice'
+import { IsModelValid } from '@/utils/validation'
 
 export default function PersonalInfo() {
-    const personal = useAppSelector((state) => state.info.personal as PersonalInfo);
+    const personal = useAppSelector((state: any) => state.info.personal as PersonalInfo);
     const errorList = useAppSelector((state:any) => state.validation.errorItemList as Array<string>)
 
     function changeHandler(event: any) {
@@ -18,7 +20,18 @@ export default function PersonalInfo() {
         }))
     }
 
-    const data = Object.entries(personal).map(([field, value]) => personalInfoConfig[field].isEditable == true && 
+    function nextStepFunction(): boolean {    
+        store.dispatch(setInitialValidation())
+        const step = store.getState().step.step;
+        const personalInfoData = store.getState().info.personal;
+    
+        if(!IsModelValid(personalInfoData, personalInfoConfig, step))
+            return false;
+    
+        return true;
+      }
+
+    const data = Object.entries(personal as PersonalInfoType).map(([field, value]) => personalInfoConfig[field].isEditable == true && 
         <div className={styles["form-item"]} key={personalInfoConfig[field].id}>
         <label 
             htmlFor={personalInfoConfig[field].id} 
@@ -48,7 +61,7 @@ export default function PersonalInfo() {
             </div>
         </div>
         <Navigation
-            validate={true}
+            customNextFunction={nextStepFunction}
         />
     </div>
   )
