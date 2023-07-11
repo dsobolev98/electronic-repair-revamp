@@ -14,10 +14,10 @@ const stepSlice = createSlice({
     name: "step",
     initialState,
     reducers: {
-        setStep: (state, action: PayloadAction<Step.StepEnum>) => {
+        setStep: (state: any, action: PayloadAction<Step.StepEnum>) => {
             state.step = action.payload;
         },
-        setInitialStep: (state) => {
+        setInitialStep: (state: any) => {
             state.step = initialState.step
         }
     }

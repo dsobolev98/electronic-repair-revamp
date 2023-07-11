@@ -1,9 +1,8 @@
 import { ItemDictionary, ItemInfo } from '@/types/ItemInfo';
 import { PersonalInfo, newPersonalInfoInstance } from '@/types/PersonalInfo';
 
-import { createSlice } from '@reduxjs/toolkit'
-import { PayloadAction } from '@reduxjs/toolkit' 
-import { stat } from 'fs';
+import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 import { v4 } from 'uuid';
 
