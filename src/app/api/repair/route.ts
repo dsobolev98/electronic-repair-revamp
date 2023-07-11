@@ -1,10 +1,13 @@
-import ItemInfo from "@/components/collect-info/item-info/ItemInfo";
-import { setInitialItem } from "@/redux/slices/infoSlice";
-import { setInitialValidation, validationState } from "@/redux/slices/validationSlice";
 import { store } from "@/redux/store";
+import { setInitialValidation, validationState } from "@/redux/slices/validationSlice";
+
 import { ItemDictionary, itemInfoConfig } from "@/types/ItemInfo";
 import { PersonalInfo, personalInfoConfig } from "@/types/PersonalInfo";
+
+import { connect, disconnect } from "@/utils/mongodb";
 import { IsModelValid } from "@/utils/validation";
+
+import * as Mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
@@ -18,7 +21,7 @@ export async function GET() {
         },
         ["2d71fe73-10b0-449c-b308-d4b8b241ec31"]: {
             category: "computer",
-            brand: "select * from table",
+            brand: "select from table",
             model: "1250"
         }
     }
@@ -30,7 +33,7 @@ export async function GET() {
         email: "test@email.com",
         addressline: "123 main st",
         city: "main city",
-        state: "state",
+        state: "NY",
         zipcode: 12345,
         telephone: 1231231234
     }
@@ -61,24 +64,74 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-    const response = await req.json();
-    const ItemData = response.ItemData as ItemDictionary;
-    const PersonalData = response.PersonalData as PersonalInfo;
+    try {
+        const response = await req.json();
+        const ItemData = response.ItemData as ItemDictionary;
+        const PersonalData = response.PersonalData as PersonalInfo;
 
-    console.log(ItemData);
-    console.log(PersonalData);
+        Validate(ItemData, PersonalData);
+        SendToDB(ItemData, PersonalData);
 
+
+        return NextResponse.json({ response });
+    }
+    catch (e) {
+        if (e instanceof Error) {
+            return NextResponse.json({ }, {
+                status: 500,
+                statusText: e.message ?? ''
+            })
+        }
+        else {
+            throw e;
+        }
+    }
+}
+
+function Validate(ItemData: ItemDictionary, PersonalData: PersonalInfo) {
+    console.log("Performing validation in repair api...")
     store.dispatch(setInitialValidation())
-    Object.entries(ItemData).forEach(([itemUId, itemInfo]) => IsModelValid(itemInfo, itemInfoConfig))
+
+    //Perform validation on models
+    Object.entries(ItemData).forEach(([itemUId, itemInfo]) => 
+        IsModelValid(itemInfo, itemInfoConfig))
     IsModelValid(PersonalData, personalInfoConfig)
 
     const validation = store.getState().validation as validationState
+
     if (validation.errorDetailList.length > 0) {
-        return NextResponse.json({ errors: validation.errorDetailList }, {
-            status: 500,
-            statusText: "request is invalid"
-        })
+        console.log(validation.errorItemList);
+        console.log("Validation failed")
+        store.dispatch(setInitialValidation())
+        throw new Error("Validation Failed");
     }
 
-    return NextResponse.json({ response });
+    console.log("Validation passed")
+}
+
+async function SendToDB(ItemData: ItemDictionary, PersonalData: PersonalInfo): Promise<string> {
+    console.log("Sending to DB in repair api...")
+
+    try {
+        await connect();
+        const client = Mongoose.connection.getClient();
+        const database = client.db("testDB");
+        const collection = database.collection("testCol");
+        const result = await collection.insertOne({
+            ItemData: ItemData,
+            PersonalData: PersonalData
+        })
+
+        const id: string = result.insertedId.toString()
+        console.log(id)
+        return id;
+    }
+    catch (e)
+    {
+        throw e;
+    }
+    finally {
+        disconnect();
+        console.log("Disconnected from DB")
+    }
 }

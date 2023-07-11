@@ -4,7 +4,8 @@ let database: Mongoose.Connection;
 
 export const connect = () => {
     // add your own uri below
-    const uri = "mongodb+srv://<username>:<password>@cluster0-v6q0g.mongodb.net/test?retryWrites=true&w=majority";
+    const uri = "mongodb+srv://admin1:admin1password@cluster0.wv0efd0.mongodb.net/?retryWrites=true&w=majority"
+    //"mongodb+srv://cluster0.wv0efd0.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority"
     
     if (database) {
         return;
@@ -12,9 +13,9 @@ export const connect = () => {
     
     Mongoose.connect(uri, {
         useNewUrlParser: true,
-        useFindAndModify: true,
+        //useFindAndModify: true,
         useUnifiedTopology: true,
-        useCreateIndex: true,
+        //useCreateIndex: true,
     } as Mongoose.ConnectOptions);
 
     database = Mongoose.connection;
