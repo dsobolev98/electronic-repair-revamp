@@ -1,20 +1,29 @@
 import * as Mongoose from "mongoose";
+import { StringFormat } from "@/utils/string";
 
 let database: Mongoose.Connection;
 
 export const connect = () => {
-    // add your own uri below
-    const uri = "mongodb+srv://admin1:admin1password@cluster0.wv0efd0.mongodb.net/?retryWrites=true&w=majority"
-    //"mongodb+srv://cluster0.wv0efd0.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority"
-    
+    console.log(process.env.DB_URL)
+    console.log(process.env.DB_USERNAME)
+    console.log(process.env.DB_PASSWORD)
+
+    const uri = StringFormat(
+        process.env.DB_URL as string, 
+        process.env.DB_USERNAME as string, 
+        process.env.DB_PASSWORD as string
+    )
+
+    console.log(uri)
+
     if (database) {
         return;
     }
     
     Mongoose.connect(uri, {
-        useNewUrlParser: true,
+        //useNewUrlParser: true,
         //useFindAndModify: true,
-        useUnifiedTopology: true,
+        //useUnifiedTopology: true,
         //useCreateIndex: true,
     } as Mongoose.ConnectOptions);
 
@@ -34,4 +43,4 @@ export const disconnect = () => {
     }
     
     Mongoose.disconnect();
-};
+}
