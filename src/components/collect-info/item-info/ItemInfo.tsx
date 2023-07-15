@@ -15,11 +15,11 @@ import { setInitialValidation } from '@/redux/slices/validationSlice'
 import Step from '@/utils/steps'
 
 export default function ItemInfo({
-  itemUId
+  itemIndex
 }:{
-  itemUId: string
+  itemIndex: number
 }) {
-  const item = useAppSelector((state:any) => state.info.item[itemUId] as ItemInfoType);
+  const item = useAppSelector((state:any) => state.info.item[itemIndex] as ItemInfoType);
   const errorList = useAppSelector((state:any) => state.validation.errorItemList as Array<string>)
 
   function additionalDevice(event:any) {
@@ -30,7 +30,6 @@ export default function ItemInfo({
   function changeHandler(event: any) {
       const { name, value } = event.target
       store.dispatch(updateItemField({
-        key: itemUId,
         field: name,
         value: value
       }))
@@ -39,8 +38,8 @@ export default function ItemInfo({
   function nextStepFunction(): boolean {
     store.dispatch(setInitialValidation())
     const step = store.getState().step.step as Step.StepEnum;
-    const currentItem = store.getState().info.currentItemUId as string;
-    const itemInfoData = store.getState().info.item[currentItem] as ItemInfoType;
+    const currentItemIndex = store.getState().info.currentItemIndex as number;
+    const itemInfoData = store.getState().info.item[currentItemIndex] as ItemInfoType;
 
     if(!IsModelValid(itemInfoData, itemInfoConfig, step))
         return false;
@@ -48,19 +47,20 @@ export default function ItemInfo({
     return true;
   }
 
-  const data = Object.entries(item as ItemInfoType).map(([field, value]) => itemInfoConfig[field].isEditable == true && 
+  const data = Object.entries(item as ItemInfoType).map(([field, value]) =>
+    itemInfoConfig[field].isEditable == true && 
     <div className={styles["form-item"]} key={itemInfoConfig[field].id}>
       <label 
         htmlFor={itemInfoConfig[field].id} 
         className={`${styles["form-label"]} ${errorList.includes(field) ? styles["form-label-error"] : ''}`}
-      >
-          {itemInfoConfig[field].label}
-      </label>
+      >{ itemInfoConfig[field].label }</label>
+
       <input 
         id={itemInfoConfig[field].id}  
         name={itemInfoConfig[field].id} 
         type="text" 
-        className={`${styles["form-text-input"]}  ${errorList.includes(field) ? styles["form-text-input-error"] : ''}`}
+        className={`${styles["form-text-input"]}  
+                    ${errorList.includes(field) ? styles["form-text-input-error"] : ''}`}
         value={value ?? ''}
         required 
         onChange={changeHandler} 
@@ -74,7 +74,7 @@ export default function ItemInfo({
           <Validation />
           <h1>Tell Us More About Your {item.category}</h1>
           <div className={styles.form}>
-              {data}
+              { data }
           </div>
           <button
             className={styles.button}

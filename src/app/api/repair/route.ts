@@ -1,30 +1,27 @@
 import { store } from "@/redux/store";
 import { setInitialValidation, validationState } from "@/redux/slices/validationSlice";
-
-import { ItemDictionary, itemInfoConfig } from "@/types/ItemInfo";
 import { PersonalInfo, personalInfoConfig } from "@/types/PersonalInfo";
-
+import { ItemInfo, itemInfoConfig } from "@/types/ItemInfo";
 import { connect, disconnect } from "@/utils/mongodb";
 import { IsModelValid } from "@/utils/validation";
+import InquiryData from '@/models/InquiryData'
 
-import * as Mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+
 
 export async function GET() {
     //return NextResponse.json("success")
 
-    const itemInfoData: ItemDictionary = {
-        ["2d71fe73-10b0-449c-b308-d4b8b241ec30"]: {
-            category: "phone",
-            brand: "apple",
-            model: "12 pro"
-        },
-        ["2d71fe73-10b0-449c-b308-d4b8b241ec31"]: {
-            category: "computer",
-            brand: "select from table",
-            model: "1250"
+    const itemInfoData: Array<ItemInfo> = [{
+            category: "Computer",
+            brand: "Dell",
+            model: "Latitude"
+        }, {
+            category: "Drone",
+            brand: "DJI",
+            model: "Mavic"
         }
-    }
+    ]
 
     const personalInfoData: PersonalInfo = {
         firstname: "FirstName",
@@ -66,7 +63,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         const response = await req.json();
-        const ItemData = response.ItemData as ItemDictionary;
+        const ItemData = response.ItemData as Array<ItemInfo>;
         const PersonalData = response.PersonalData as PersonalInfo;
 
         Validate(ItemData, PersonalData);
@@ -88,13 +85,12 @@ export async function POST(req: NextRequest) {
     }
 }
 
-function Validate(ItemData: ItemDictionary, PersonalData: PersonalInfo) {
+function Validate(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo) {
     console.log("Performing validation in repair api...")
     store.dispatch(setInitialValidation())
 
     //Perform validation on models
-    Object.entries(ItemData).forEach(([itemUId, itemInfo]) => 
-        IsModelValid(itemInfo, itemInfoConfig))
+    ItemData.forEach(function(item: ItemInfo) { IsModelValid(item, itemInfoConfig) });
     IsModelValid(PersonalData, personalInfoConfig)
 
     const validation = store.getState().validation as validationState
@@ -109,20 +105,17 @@ function Validate(ItemData: ItemDictionary, PersonalData: PersonalInfo) {
     console.log("Validation passed")
 }
 
-async function SendToDB(ItemData: ItemDictionary, PersonalData: PersonalInfo): Promise<string> {
+async function SendToDB(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo): Promise<string> {
     console.log("Sending to DB in repair api...")
 
     try {
         await connect();
-        const client = Mongoose.connection.getClient();
-        const database = client.db("testDB");
-        const collection = database.collection("testCol");
-        const result = await collection.insertOne({
+        const result = await InquiryData.create({
             ItemData: ItemData,
             PersonalData: PersonalData
         })
 
-        const id: string = result.insertedId.toString()
+        const id: string = result.id.toString()
         console.log(id)
         return id;
     }
