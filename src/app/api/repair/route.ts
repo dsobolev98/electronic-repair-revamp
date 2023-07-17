@@ -67,19 +67,21 @@ export async function POST(req: NextRequest) {
         const PersonalData = response.PersonalData as PersonalInfo;
 
         Validate(ItemData, PersonalData);
-        SendToDB(ItemData, PersonalData);
+        await SendToDB(ItemData, PersonalData);
 
 
         return NextResponse.json({ response });
     }
     catch (e) {
         if (e instanceof Error) {
+            console.log("Error instance, sending status 500 from post repair api")
             return NextResponse.json({ }, {
                 status: 500,
                 statusText: e.message ?? ''
             })
         }
         else {
+            console.log("Other exception instance, throwing ex from post repair api")
             throw e;
         }
     }
@@ -110,6 +112,7 @@ async function SendToDB(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo): 
 
     try {
         await connect();
+
         const result = await InquiryData.create({
             ItemData: ItemData,
             PersonalData: PersonalData
@@ -119,12 +122,13 @@ async function SendToDB(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo): 
         console.log(id)
         return id;
     }
-    catch (e)
-    {
+    catch (e) {
+        console.log("exception in SendToDB function in repair api")
+        console.log(e)
         throw e;
     }
     finally {
+        console.log("Trying to call mongodb disconnect")
         disconnect();
-        console.log("Disconnected from DB")
     }
 }

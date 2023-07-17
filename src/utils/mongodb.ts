@@ -4,27 +4,19 @@ import { StringFormat } from "@/utils/string";
 let database: Mongoose.Connection;
 
 export const connect = () => {
-    console.log(process.env.DB_URL)
-    console.log(process.env.DB_USERNAME)
-    console.log(process.env.DB_PASSWORD)
-
     const uri = StringFormat(
         process.env.DB_URL as string, 
         process.env.DB_USERNAME as string, 
         process.env.DB_PASSWORD as string
     )
 
-    console.log(uri)
-
     if (database) {
         return;
     }
     
     Mongoose.connect(uri, {
-        //useNewUrlParser: true,
-        //useFindAndModify: true,
-        //useUnifiedTopology: true,
-        //useCreateIndex: true,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
     } as Mongoose.ConnectOptions);
 
     database = Mongoose.connection;

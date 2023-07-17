@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import { ItemKeys } from "@/types/ItemInfo"
 import { PersonalKeys, PersonalInfo} from "@/types/PersonalInfo"
 
