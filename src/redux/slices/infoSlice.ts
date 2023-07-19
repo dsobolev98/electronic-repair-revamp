@@ -10,13 +10,14 @@ export interface infoState {
     currentItemIndex: number,
     item: Array<ItemInfo>,
     personal: PersonalInfo
-
+    applicationUId: string
 }
 
 const initialState: infoState = {
     currentItemIndex: 0,
     item: [],
-    personal: newPersonalInfoInstance()
+    personal: newPersonalInfoInstance(),
+    applicationUId: ""
 };
 
 const infoSlice = createSlice({
@@ -80,6 +81,9 @@ const infoSlice = createSlice({
                 ...state.personal,
                 [field]: value
             }
+        },
+        setApplicationUId: (state: infoState, action: PayloadAction<string>) => {
+            state.applicationUId = action.payload
         }
     }
 });
@@ -92,7 +96,8 @@ export const {
     setItem, 
     updateItemField, 
     setPersonal, 
-    updatePersonalField 
+    updatePersonalField,
+    setApplicationUId
 } = infoSlice.actions;
 
 export default infoSlice.reducer;

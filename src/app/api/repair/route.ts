@@ -2,7 +2,7 @@ import { store } from "@/redux/store";
 import { setInitialValidation, validationState } from "@/redux/slices/validationSlice";
 import { PersonalInfo, personalInfoConfig } from "@/types/PersonalInfo";
 import { ItemInfo, itemInfoConfig } from "@/types/ItemInfo";
-import { connect, disconnect } from "@/utils/mongodb";
+import { connect, disconnect, getNextSequence } from "@/utils/mongodb";
 import { IsModelValid } from "@/utils/validation";
 import InquiryData from '@/models/InquiryData'
 
@@ -62,13 +62,18 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
     try {
-        const response = await req.json();
-        const ItemData = response.ItemData as Array<ItemInfo>;
-        const PersonalData = response.PersonalData as PersonalInfo;
+        const request = await req.json();
+        const ItemData = request.ItemData as Array<ItemInfo>;
+        const PersonalData = request.PersonalData as PersonalInfo;
 
         Validate(ItemData, PersonalData);
-        await SendToDB(ItemData, PersonalData);
+        let applicationUId = await SendToDB(ItemData, PersonalData);
 
+        const response = {
+            ApplicationUId: applicationUId,
+            ItemData: ItemData,
+            PersonalData: PersonalData
+        }
 
         return NextResponse.json({ response });
     }
@@ -113,14 +118,14 @@ async function SendToDB(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo): 
     try {
         await connect();
 
-        const result = await InquiryData.create({
+        const inquiryData = new InquiryData({
+            ApplicationId: await getNextSequence('application'),
             ItemData: ItemData,
             PersonalData: PersonalData
         })
 
-        const id: string = result.id.toString()
-        console.log(id)
-        return id;
+        const result = await inquiryData.save();
+        return result.id.toString();
     }
     catch (e) {
         console.log("exception in SendToDB function in repair api")

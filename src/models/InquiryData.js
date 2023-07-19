@@ -27,6 +27,10 @@ const inquirySchema = new Schema({
             [PersonalKeys.TELEPHONE]: Number
         },
         required: true
+    },
+    ApplicationId: {
+        type: Number,
+        required: true
     }
 }, { timestamps: true })
 

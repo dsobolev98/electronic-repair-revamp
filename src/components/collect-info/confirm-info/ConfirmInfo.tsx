@@ -7,7 +7,7 @@ import { PersonalInfo, personalInfoConfig } from '@/types/PersonalInfo'
 import Navigation from '../navigation/Navigation'
 import { setInitialStep, setStep } from '@/redux/slices/stepSlice'
 import { StepEnum } from '@/utils/steps'
-import { removeItem, setCurrentItemIndex, setInitialItem } from '@/redux/slices/infoSlice'
+import { removeItem, setApplicationUId, setCurrentItemIndex, setInitialItem } from '@/redux/slices/infoSlice'
 import { addErrorDetail, setInitialValidation } from '@/redux/slices/validationSlice'
 import Validation from '../validation/Validation'
 
@@ -54,7 +54,7 @@ function ConfirmInfo() {
                 throw("reponse not in 200");
 
             let cleanRes = await response.json();
-            console.log(cleanRes);
+            store.dispatch(setApplicationUId(cleanRes.response.ApplicationUId))
         }
         catch (ex) {
             store.dispatch(addErrorDetail("There seems to be an error, please try again"))
