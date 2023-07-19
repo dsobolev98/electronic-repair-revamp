@@ -10,18 +10,15 @@ import { setCategory } from '@/redux/slices/infoSlice';
 import $ from 'jquery'
 
 export default function Category({
-    itemUId
+    itemIndex
   }:{
-    itemUId: string
+    itemIndex: number
   }) {
 
   function categoryClicked(event:any) {
-    let categorySelected: any = {
-      key: itemUId,
-      category: event.target.value
-    }
+    let categorySelected: string = event.target.value
 
-    console.log(categorySelected.category)
+    console.log(categorySelected)
     store.dispatch(setCategory(categorySelected));
     
     let nextStep = Step.GetNextStep(Step.StepEnum.Category);
@@ -30,13 +27,13 @@ export default function Category({
     }
   }
 
-  window.onload = () => {
-    console.log(styles.container)
-    $(`.${styles.container}`).addClass(styles["disable-buttons"])
-  }
-
   $(document).ready(() => {
     $(`.${styles.container}`).removeClass(styles["disable-buttons"])
+  })
+
+  $(window).on('load', () => {
+    console.log(styles.container)
+    $(`.${styles.container}`).addClass(styles["disable-buttons"])
   })
 
   const data = CategoryInfo.Category;
