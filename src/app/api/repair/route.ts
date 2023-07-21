@@ -71,15 +71,18 @@ export async function POST(req: NextRequest) {
 
         const response = {
             ApplicationUId: applicationUId,
+            StatusId: 130,
             ItemData: ItemData,
             PersonalData: PersonalData
         }
 
+        console.log("Preparing to send response back from repair api")
         return NextResponse.json({ response });
     }
     catch (e) {
         if (e instanceof Error) {
             console.log("Error instance, sending status 500 from post repair api")
+            console.log("Error: " + e.message)
             return NextResponse.json({ }, {
                 status: 500,
                 statusText: e.message ?? ''
@@ -125,6 +128,7 @@ async function SendToDB(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo): 
         })
 
         const result = await inquiryData.save();
+        console.log(result.id.toString())
         return result.id.toString();
     }
     catch (e) {

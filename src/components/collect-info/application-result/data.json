@@ -1,0 +1,20 @@
+{
+    "StatusScenario": {
+         "100": {
+            "Title": "More Info Needed",
+            "Description": "At this moment, we're still processing your repair quote. We kindly ask for your patience and expect to provide you with a suitable estimate within the next 24-48 hours."
+         },
+         "110": {
+            "Title": "Declined",
+            "Description": "We regret to inform you that we were unable to approve your repair at this time. We appreciate your interest and encourage you to review our requirements or get in touch with our customer service for further assistance. Thank you for considering our services."
+         },
+         "120": {
+            "Title": "Approved",
+            "Description": "We're delighted to inform you that your repair has been approved! "
+         },
+         "130": {
+            "Title": "Partially Approved",
+            "Description": "We are pleased to inform you that your application has been partially approved. Some items within your application require further review or were not eligible."
+         }
+    }
+}
