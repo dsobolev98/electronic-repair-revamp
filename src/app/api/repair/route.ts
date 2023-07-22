@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
 
         const response = {
             ApplicationUId: applicationUId,
-            StatusId: 130,
+            StatusId: 100,
             ItemData: ItemData,
             PersonalData: PersonalData
         }
