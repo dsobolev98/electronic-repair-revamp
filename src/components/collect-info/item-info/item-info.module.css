@@ -24,11 +24,6 @@
     gap: 20px;
     padding: 20px 0;
 }
-
-/* .form-item .form-label {
-    padding: 5px;
-} */
-
 .form-item .form-label-error {
     color: red;
 }
@@ -47,20 +42,19 @@
     border-radius: 10px;
 }
 
-.button {
-    max-width: 100px;
-    max-height: 40px;
-    padding: 10px auto;
-    /* margin: auto; */
+.button-add {
+    width: 45px;
+    height: 45px;
+    /* padding: 10px; */
+    margin: 0 10px 0 auto;
     background-color: lightgreen;
     
     text-align: center;
-    font-size: 15px;
+    font-size: 25px;
 
     color: white;
     text-decoration: none;
-    border-radius: 10px;
-
-    display: flex;
-    flex-wrap: nowrap;
+    border: none;
+    border-radius: 50%;
+    border-color: lightgreen;
 }

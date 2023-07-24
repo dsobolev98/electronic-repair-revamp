@@ -39,24 +39,26 @@ export default function Navigation({
 
     return (
         <div className={styles["button-row-container"]}>
-            {   
-                displayBackStep &&
-                <button 
-                    type='button' 
-                    className={`${styles.button}`}
-                    onClick={(event:any) => handlePreviousStep()}
-                >
-                    Back
-                </button>
-            }
             {
                 displayNextStep &&
                 <button 
                     type='submit' 
-                    className={`${styles.button}`}
+                    className={`${styles.button} ${styles["button-next"]}`}
                     onClick={(event:any) => handleNextStep()}
+                    id='button-navigation-next'
                 >
                     Next
+                </button>
+            }
+            {   
+                displayBackStep &&
+                <button 
+                    type='button' 
+                    className={`${styles.button} ${styles["button-previous"]}`}
+                    onClick={(event:any) => handlePreviousStep()}
+                    id='button-navigation-previous'
+                >
+                    Back
                 </button>
             }
         </div>
