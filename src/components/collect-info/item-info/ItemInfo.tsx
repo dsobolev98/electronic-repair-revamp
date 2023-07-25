@@ -23,8 +23,15 @@ export default function ItemInfo({
   const errorList = useAppSelector((state:any) => state.validation.errorItemList as Array<string>)
 
   function additionalDevice(event:any) {
-    store.dispatch(setInitialItem())
-    store.dispatch(setInitialStep())
+    store.dispatch(setInitialValidation())
+    const step = store.getState().step.step as Step.StepEnum;
+    const currentItem = store.getState().info.currentItemUId as string;
+    const itemInfoData = store.getState().info.item[currentItem] as ItemInfoType;
+
+    if (IsModelValid(itemInfoData, itemInfoConfig, step)) {
+      store.dispatch(setInitialItem())
+      store.dispatch(setInitialStep())
+    }
   }
 
   function changeHandler(event: any) {
@@ -73,16 +80,14 @@ export default function ItemInfo({
       <div className={styles.container}>
           <Validation />
           <h1>Tell Us More About Your {item.category}</h1>
+          <button
+            className={styles["button-add"]}
+            type='button'
+            onClick={(event) => additionalDevice(event)}
+          > + </button>
           <div className={styles.form}>
               { data }
           </div>
-          <button
-            className={styles.button}
-            type='button'
-            onClick={(event) => additionalDevice(event)}
-          >
-            Add Another Device
-          </button>
       </div>
       <Navigation
         customNextFunction={nextStepFunction}

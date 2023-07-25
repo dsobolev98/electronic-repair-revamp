@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './confirm-info.module.css'
 import { store } from '@/redux/store'
 import { useAppSelector } from '@/redux/hooks'
@@ -10,13 +10,19 @@ import { StepEnum } from '@/utils/steps'
 import { removeItem, setApplicationUId, setCurrentItemIndex, setInitialItem, setStatusId } from '@/redux/slices/infoSlice'
 import { addErrorDetail, setInitialValidation } from '@/redux/slices/validationSlice'
 import Validation from '../validation/Validation'
+import $ from 'jquery'
 
 function ConfirmInfo() {
     const itemInfo = useAppSelector((state:any) => state.info.item as Array<ItemInfo>)
     const personalInfo = useAppSelector((state:any) => state.info.personal)
+    const [termsAgreement, setTermsAgreement] = useState(false);
 
+    // -----------------------------------------------
+    // onClick Functions
+    // -----------------------------------------------
     function handleEditItem(event:any) {
         const itemIndex = event.target.value;
+        store.dispatch(setInitialValidation())
         store.dispatch(setCurrentItemIndex(itemIndex))
         store.dispatch(setStep(StepEnum.ItemInfo))
     }
@@ -27,17 +33,27 @@ function ConfirmInfo() {
     }
 
     function additionalDevice(event:any) {
+        store.dispatch(setInitialValidation())
         store.dispatch(setInitialItem())
         store.dispatch(setInitialStep())
     }
 
     function handleEditPersonal(event:any) {
+        store.dispatch(setInitialValidation())
         store.dispatch(setStep(StepEnum.PersonalInfo))
     }
 
     async function nextStepFunction(): Promise<boolean> {
         try {
             store.dispatch(setInitialValidation())
+            $("#button-navigation-next").prop("disabled", true)
+            $("#button-navigation-next").addClass(styles["button-disabled"])
+
+            if (!termsAgreement) {
+                store.dispatch(addErrorDetail("Please accept terms and conditions"))
+                return false;
+            }
+  
             const itemInfoData = store.getState().info.item as Array<ItemInfo>;
             const personalInfoData = store.getState().info.personal as PersonalInfo;
 
@@ -61,21 +77,30 @@ function ConfirmInfo() {
             store.dispatch(addErrorDetail("There seems to be an error, please try again"))
             return false;
         }
+        finally {
+            $("#button-navigation-next").prop("disabled", false)
+            $("#button-navigation-next").removeClass(styles["button-disabled"])
+        }
 
         return true;
     }
-
     
-    let itemInfoData = itemInfo.map((item, index) =>
-        <li key={index} className={styles.box}>
-            <h3>Item {index + 1}</h3>
-            {
-                Object.entries(item as ItemInfo).map(([key, value]) =>
-                    <div key={key}>
-                        <p><span className={styles.bold}>{itemInfoConfig[key].label}:</span> {value}</p>
-                    </div>
-                )
-            }
+    // -----------------------------------------------
+    // Mapping Functions
+    // -----------------------------------------------
+    const itemInfoData = itemInfo.map((item, index) => 
+        <div key={key} className={styles.card}>
+            <div className={styles["text-container-item"]}>
+                <h3>Item {index + 1}</h3>
+                {
+                  Object.entries(item as ItemInfo).map(([key, value]) =>
+                      <div key={key}>
+                          <p><span className={styles.bold}>{itemInfoConfig[key].label}:</span> {value}</p>
+                      </div>
+                  )
+                }
+            </div>
+
             <button
                 type='button'
                 className={styles["edit-button"]}
@@ -92,55 +117,56 @@ function ConfirmInfo() {
                     onClick={(event:any) => handleRemoveItem(event)}
                 > Remove </button>
             }
-        </li>
-    );
+       </div>
+    ))
 
     const personalInfoData = Object.entries(personalInfo as PersonalInfo).map(([key, value], index) => (
-        <li key={index}>
-            <div>
-                <p><span className={styles.bold}>{personalInfoConfig[key].label}:</span> {value}</p>
-            </div>
-        </li>
+        <div key={index}>
+            <span className={styles.bold}>{personalInfoConfig[key].label}:</span> {value}
+        </div>
     ));
 
   return (
     <div>
         <div className={styles.container}>
             <Validation />
-            <h1 className={`${styles.bold} ${styles["align-left"]}`}>Item Info:</h1>
-            <ul className={styles["item-list"]}>
+
+            <h1 className={`${styles.bold} ${styles["section-title"]}`}>Items Information:</h1>
+            <div className={styles["scrolling-wrapper"]}>
                 {itemInfoData}
-                <li className={styles.box}>
-                    <button
-                        type='button'
-                        className={styles["edit-button"]}
-                        onClick={(event:any) => additionalDevice(event)}
-                    >
-                        Add Another Item
-                    </button>
-                </li>
-            </ul>
-            <h1 className={`${styles.bold} ${styles["align-left"]}`}>Personal Info:</h1>
-            <ul className={`${styles.box} ${styles["align-left"]}`}>
+                <button
+                    type='button'
+                    className={`${styles.card} ${styles["button-add"]}`}
+                    onClick={(event) => additionalDevice(event)}
+                > + </button>
+            </div>
+
+            <h1 className={`${styles.bold} ${styles["section-title"]}`}>Personal Information:</h1>
+            <div className={styles["container-personal"]}>
                 {personalInfoData}
                 <button
                     type='button'
-                    className={styles["edit-button"]}
+                    className={styles["button-edit-personal"]}
                     onClick={(event:any) => handleEditPersonal(event)}
                 >
                     Edit
                 </button>
-            </ul>
+            </div>
             
-            <div className={styles["align-left"]}>
-                <input type="checkbox" id="checkbox" name="checkbox"/>
-                <label htmlFor='checkbox'>I agree to the terms and conditions</label>
+            <h1 className={`${styles.bold} ${styles["section-title"]}`}>Agreements:</h1>
+            <div className={styles["agreement-container"]}>
+                <input type="checkbox" id="terms-conditions" name="terms-conditions" 
+                    onClick={(event) => {
+                        console.log(event.currentTarget.checked)
+                        setTermsAgreement(event.currentTarget.checked)
+                    }}/>
+                <label htmlFor='terms-conditions'>&nbsp;I agree to the terms and conditions</label>
             </div> 
         </div>
         <Navigation 
-                displayBackStep={false}
-                customNextFunction={nextStepFunction}
-            />
+            displayBackStep={false}
+            customNextFunction={nextStepFunction}
+        />
     </div>
   )
 }

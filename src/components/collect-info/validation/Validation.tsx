@@ -8,15 +8,18 @@ function Validation() {
   const errors = errorList.map((message, index) => (<li key={index}>{message}</li>))
 
   return (
-    <div className={styles.validationContainer}>
-      { errorList.length > 0 &&
-        <div>
-          <h3>Please fix these errors:</h3>
-          <ul>
-              {errors}
-          </ul>
-        </div>
-      }
+    <div>
+    { errorList.length > 0 &&
+      <div className={styles.validationContainer}>
+        
+          <div>
+            <h3>Please fix these errors:</h3>
+            <ul>
+                {errors}
+            </ul>
+          </div>
+      </div>
+    }
     </div>
   )
 }
