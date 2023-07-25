@@ -25,7 +25,7 @@ export default function ItemInfo({
   function additionalDevice(event:any) {
     store.dispatch(setInitialValidation())
     const step = store.getState().step.step as Step.StepEnum;
-    const currentItem = store.getState().info.currentItemUId as string;
+    const currentItem = store.getState().info.currentItemIndex as number;
     const itemInfoData = store.getState().info.item[currentItem] as ItemInfoType;
 
     if (IsModelValid(itemInfoData, itemInfoConfig, step)) {

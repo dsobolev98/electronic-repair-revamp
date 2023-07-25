@@ -89,7 +89,7 @@ function ConfirmInfo() {
     // Mapping Functions
     // -----------------------------------------------
     const itemInfoData = itemInfo.map((item, index) => 
-        <div key={key} className={styles.card}>
+        <div key={index} className={styles.card}>
             <div className={styles["text-container-item"]}>
                 <h3>Item {index + 1}</h3>
                 {
@@ -103,7 +103,7 @@ function ConfirmInfo() {
 
             <button
                 type='button'
-                className={styles["edit-button"]}
+                className={styles["button-edit-item"]}
                 value={index}
                 onClick={(event:any) => handleEditItem(event)}
             > Edit </button>
@@ -112,13 +112,13 @@ function ConfirmInfo() {
                 itemInfo.length > 1 && 
                 <button
                     type='button'
-                    className={styles["edit-button"]}
+                    className={styles["button-remove-item"]}
                     value={index}
                     onClick={(event:any) => handleRemoveItem(event)}
                 > Remove </button>
             }
        </div>
-    ))
+    )
 
     const personalInfoData = Object.entries(personalInfo as PersonalInfo).map(([key, value], index) => (
         <div key={index}>
