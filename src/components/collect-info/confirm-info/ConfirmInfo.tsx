@@ -7,7 +7,7 @@ import { PersonalInfo, personalInfoConfig } from '@/types/PersonalInfo'
 import Navigation from '../navigation/Navigation'
 import { setInitialStep, setStep } from '@/redux/slices/stepSlice'
 import { StepEnum } from '@/utils/steps'
-import { removeItem, setApplicationUId, setCurrentItemIndex, setInitialItem } from '@/redux/slices/infoSlice'
+import { removeItem, setApplicationUId, setCurrentItemIndex, setInitialItem, setStatusId } from '@/redux/slices/infoSlice'
 import { addErrorDetail, setInitialValidation } from '@/redux/slices/validationSlice'
 import Validation from '../validation/Validation'
 
@@ -55,6 +55,7 @@ function ConfirmInfo() {
 
             let cleanRes = await response.json();
             store.dispatch(setApplicationUId(cleanRes.response.ApplicationUId))
+            store.dispatch(setStatusId(cleanRes.response.StatusId.toString()))
         }
         catch (ex) {
             store.dispatch(addErrorDetail("There seems to be an error, please try again"))

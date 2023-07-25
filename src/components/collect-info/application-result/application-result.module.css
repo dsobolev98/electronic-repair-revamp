@@ -10,3 +10,13 @@
     justify-content: space-between;
     gap: 20px 20px; */
 }
+
+.subtext {
+    color: gray;
+    font-size: 12px;
+}
+
+.link {
+    color: #1b5ba5;
+    text-decoration: underline;
+}
