@@ -12,8 +12,6 @@ export type ItemInfo  = {
     [ItemKeys.MODEL]: string
 }
 
-export type ItemDictionary = Record<string, ItemInfo>
-
 export type ItemInfoConfig = {
     [K in keyof Omit<ItemInfo, ''> as string]: {
       id: string,
@@ -50,3 +48,11 @@ export const itemInfoConfig: ItemInfoConfig = {
         validationMessage: "Please enter a valid model"
     }
 };
+
+export function newItemInfoInstance(): ItemInfo {
+  return {
+    [ItemKeys.CATEGORY]: '',
+    [ItemKeys.BRAND]: '', 
+    [ItemKeys.MODEL]: ''
+  }
+}

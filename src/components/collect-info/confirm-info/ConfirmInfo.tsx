@@ -2,18 +2,18 @@ import React, { useState } from 'react'
 import styles from './confirm-info.module.css'
 import { store } from '@/redux/store'
 import { useAppSelector } from '@/redux/hooks'
-import { ItemDictionary, ItemInfo, ItemKeys, itemInfoConfig } from '@/types/ItemInfo'
+import { ItemInfo, ItemKeys, itemInfoConfig } from '@/types/ItemInfo'
 import { PersonalInfo, personalInfoConfig } from '@/types/PersonalInfo'
 import Navigation from '../navigation/Navigation'
 import { setInitialStep, setStep } from '@/redux/slices/stepSlice'
 import { StepEnum } from '@/utils/steps'
-import { removeItem, setCurrentItemId, setInitialItem } from '@/redux/slices/infoSlice'
+import { removeItem, setApplicationUId, setCurrentItemIndex, setInitialItem, setStatusId } from '@/redux/slices/infoSlice'
 import { addErrorDetail, setInitialValidation } from '@/redux/slices/validationSlice'
 import Validation from '../validation/Validation'
 import $ from 'jquery'
 
 function ConfirmInfo() {
-    const itemInfo = useAppSelector((state:any) => state.info.item)
+    const itemInfo = useAppSelector((state:any) => state.info.item as Array<ItemInfo>)
     const personalInfo = useAppSelector((state:any) => state.info.personal)
     const [termsAgreement, setTermsAgreement] = useState(false);
 
@@ -21,15 +21,15 @@ function ConfirmInfo() {
     // onClick Functions
     // -----------------------------------------------
     function handleEditItem(event:any) {
-        const itemUId = event.target.value;
+        const itemIndex = event.target.value;
         store.dispatch(setInitialValidation())
-        store.dispatch(setCurrentItemId(itemUId))
+        store.dispatch(setCurrentItemIndex(itemIndex))
         store.dispatch(setStep(StepEnum.ItemInfo))
     }
 
     function handleRemoveItem(event:any) {
-        const itemUId = event.target.value;
-        store.dispatch(removeItem(itemUId))
+        const itemIndex = event.target.value;
+        store.dispatch(removeItem(itemIndex))
     }
 
     function additionalDevice(event:any) {
@@ -53,8 +53,8 @@ function ConfirmInfo() {
                 store.dispatch(addErrorDetail("Please accept terms and conditions"))
                 return false;
             }
-
-            const itemInfoData = store.getState().info.item as ItemDictionary;
+  
+            const itemInfoData = store.getState().info.item as Array<ItemInfo>;
             const personalInfoData = store.getState().info.personal as PersonalInfo;
 
             const response = await fetch('api/repair', {
@@ -70,7 +70,8 @@ function ConfirmInfo() {
                 throw("reponse not in 200");
 
             let cleanRes = await response.json();
-            console.log(cleanRes);
+            store.dispatch(setApplicationUId(cleanRes.response.ApplicationUId))
+            store.dispatch(setStatusId(cleanRes.response.StatusId.toString()))
         }
         catch (ex) {
             store.dispatch(addErrorDetail("There seems to be an error, please try again"))
@@ -83,36 +84,40 @@ function ConfirmInfo() {
 
         return true;
     }
-
+    
     // -----------------------------------------------
     // Mapping Functions
     // -----------------------------------------------
-    const itemInfoData = Object.entries(itemInfo as ItemInfo).map(([key, value], index) => (
+    const itemInfoData = itemInfo.map((item, index) => 
         <div key={key} className={styles.card}>
             <div className={styles["text-container-item"]}>
                 <h3>Item {index + 1}</h3>
-                {Object.entries(value).map(([infoKey, infoItem]) => (
-                    <div key={infoKey}>
-                        <span className={styles.bold}>{itemInfoConfig[infoKey].label}:</span> {infoItem}
-                    </div>
-                ))}
+                {
+                  Object.entries(item as ItemInfo).map(([key, value]) =>
+                      <div key={key}>
+                          <p><span className={styles.bold}>{itemInfoConfig[key].label}:</span> {value}</p>
+                      </div>
+                  )
+                }
             </div>
 
-            { Object.keys(itemInfo as ItemInfo).length > 1 && 
             <button
                 type='button'
-                className={styles["button-remove"]}
-                value={key}
-                onClick={(event:any) => handleRemoveItem(event)}
-            > Remove </button> }
-
-            <button
-                type='button'
-                className={styles["button-edit-item"]}
-                value={key}
+                className={styles["edit-button"]}
+                value={index}
                 onClick={(event:any) => handleEditItem(event)}
             > Edit </button>
-        </div>
+
+            {
+                itemInfo.length > 1 && 
+                <button
+                    type='button'
+                    className={styles["edit-button"]}
+                    value={index}
+                    onClick={(event:any) => handleRemoveItem(event)}
+                > Remove </button>
+            }
+       </div>
     ))
 
     const personalInfoData = Object.entries(personalInfo as PersonalInfo).map(([key, value], index) => (

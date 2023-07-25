@@ -1,27 +1,27 @@
-import ItemInfo from "@/components/collect-info/item-info/ItemInfo";
-import { setInitialItem } from "@/redux/slices/infoSlice";
-import { setInitialValidation, validationState } from "@/redux/slices/validationSlice";
 import { store } from "@/redux/store";
-import { ItemDictionary, itemInfoConfig } from "@/types/ItemInfo";
+import { setInitialValidation, validationState } from "@/redux/slices/validationSlice";
 import { PersonalInfo, personalInfoConfig } from "@/types/PersonalInfo";
+import { ItemInfo, itemInfoConfig } from "@/types/ItemInfo";
+import { connect, disconnect, getNextSequence } from "@/utils/mongodb";
 import { IsModelValid } from "@/utils/validation";
+import InquiryData from '@/models/InquiryData'
+
 import { NextRequest, NextResponse } from "next/server";
+
 
 export async function GET() {
     //return NextResponse.json("success")
 
-    const itemInfoData: ItemDictionary = {
-        ["2d71fe73-10b0-449c-b308-d4b8b241ec30"]: {
-            category: "phone",
-            brand: "apple",
-            model: "12 pro"
-        },
-        ["2d71fe73-10b0-449c-b308-d4b8b241ec31"]: {
-            category: "computer",
-            brand: "select * from table",
-            model: "1250"
+    const itemInfoData: Array<ItemInfo> = [{
+            category: "Computer",
+            brand: "Dell",
+            model: "Latitude"
+        }, {
+            category: "Drone",
+            brand: "DJI",
+            model: "Mavic"
         }
-    }
+    ]
 
     const personalInfoData: PersonalInfo = {
         firstname: "FirstName",
@@ -30,7 +30,7 @@ export async function GET() {
         email: "test@email.com",
         addressline: "123 main st",
         city: "main city",
-        state: "state",
+        state: "NY",
         zipcode: 12345,
         telephone: 1231231234
     }
@@ -61,24 +61,83 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-    const response = await req.json();
-    const ItemData = response.ItemData as ItemDictionary;
-    const PersonalData = response.PersonalData as PersonalInfo;
+    try {
+        const request = await req.json();
+        const ItemData = request.ItemData as Array<ItemInfo>;
+        const PersonalData = request.PersonalData as PersonalInfo;
 
-    console.log(ItemData);
-    console.log(PersonalData);
+        Validate(ItemData, PersonalData);
+        let applicationUId = await SendToDB(ItemData, PersonalData);
 
+        const response = {
+            ApplicationUId: applicationUId,
+            StatusId: 100,
+            ItemData: ItemData,
+            PersonalData: PersonalData
+        }
+
+        console.log("Preparing to send response back from repair api")
+        return NextResponse.json({ response });
+    }
+    catch (e) {
+        if (e instanceof Error) {
+            console.log("Error instance, sending status 500 from post repair api")
+            console.log("Error: " + e.message)
+            return NextResponse.json({ }, {
+                status: 500,
+                statusText: e.message ?? ''
+            })
+        }
+        else {
+            console.log("Other exception instance, throwing ex from post repair api")
+            throw e;
+        }
+    }
+}
+
+function Validate(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo) {
+    console.log("Performing validation in repair api...")
     store.dispatch(setInitialValidation())
-    Object.entries(ItemData).forEach(([itemUId, itemInfo]) => IsModelValid(itemInfo, itemInfoConfig))
+
+    //Perform validation on models
+    ItemData.forEach(function(item: ItemInfo) { IsModelValid(item, itemInfoConfig) });
     IsModelValid(PersonalData, personalInfoConfig)
 
     const validation = store.getState().validation as validationState
+
     if (validation.errorDetailList.length > 0) {
-        return NextResponse.json({ errors: validation.errorDetailList }, {
-            status: 500,
-            statusText: "request is invalid"
-        })
+        console.log(validation.errorItemList);
+        console.log("Validation failed")
+        store.dispatch(setInitialValidation())
+        throw new Error("Validation Failed");
     }
 
-    return NextResponse.json({ response });
+    console.log("Validation passed")
+}
+
+async function SendToDB(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo): Promise<string> {
+    console.log("Sending to DB in repair api...")
+
+    try {
+        await connect();
+
+        const inquiryData = new InquiryData({
+            ApplicationId: await getNextSequence('application'),
+            ItemData: ItemData,
+            PersonalData: PersonalData
+        })
+
+        const result = await inquiryData.save();
+        console.log(result.id.toString())
+        return result.id.toString();
+    }
+    catch (e) {
+        console.log("exception in SendToDB function in repair api")
+        console.log(e)
+        throw e;
+    }
+    finally {
+        console.log("Trying to call mongodb disconnect")
+        disconnect();
+    }
 }

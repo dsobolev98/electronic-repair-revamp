@@ -1,80 +1,80 @@
-import { ItemDictionary, ItemInfo } from '@/types/ItemInfo';
+import { ItemInfo, newItemInfoInstance } from '@/types/ItemInfo';
 import { PersonalInfo, newPersonalInfoInstance } from '@/types/PersonalInfo';
 
-import { createSlice } from '@reduxjs/toolkit'
-import { PayloadAction } from '@reduxjs/toolkit' 
-import { stat } from 'fs';
+import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 import { v4 } from 'uuid';
 
 export interface infoState {
-    currentItemUId: string,
-    item: ItemDictionary,
+    currentItemIndex: number,
+    item: Array<ItemInfo>,
     personal: PersonalInfo
-
+    applicationUId: string,
+    statusId: string
 }
 
 const initialState: infoState = {
-    currentItemUId: '',
-    item: {},
-    personal: newPersonalInfoInstance()
+    currentItemIndex: 0,
+    item: [],
+    personal: newPersonalInfoInstance(),
+    applicationUId: "",
+    statusId: ""
 };
 
 const infoSlice = createSlice({
     name: "info",
     initialState,
     reducers: {
-        setInitialItem: (state:any) => {
-            const uuid = v4()
-            const emptyItem: ItemInfo = {
-                category: '',
-                brand: '',
-                model: '',
-              };
-            state.currentItemUId = uuid;
-            state.item[uuid] = emptyItem;
+        setInitialItem: (state: infoState) => {
+            const index = state.item.length;
+            state.currentItemIndex = index;
+            state.item.push(newItemInfoInstance());
         },
-        removeItem: (state:any, action: PayloadAction<string>) => {
-            const key = action.payload
+        removeItem: (state:infoState, action: PayloadAction<number>) => {
+            let newItemArray: Array<ItemInfo> = []
 
-            delete state.item[key]
-            let newKey:string = Object.keys(state.item as ItemDictionary)[0]
-            state.currentItemUId = newKey;
+            state.item.forEach(item => {
+                if (state.item.indexOf(item) != action.payload)
+                    newItemArray.push(item)
+            })
+
+            state.item = newItemArray
+            state.currentItemIndex = 0;
         },
-        setCategory: (state:any, action: PayloadAction<{key: string, category: string}>) => {
-            const {key, category} = action.payload;
-            if (state.item != undefined && state.item[key])
-            {
-                state.item[key].category = category;
-            }
+        setCategory: (state:infoState, action: PayloadAction<string>) => {
+            const category = action.payload;
+            if (state.item[state.currentItemIndex] != undefined)
+                state.item[state.currentItemIndex].category = category;
         },
-        setCurrentItemId: (state:any, action: PayloadAction<string>) => {
-            console.log(action.payload)
-            state.currentItemUId = action.payload;
+        setCurrentItemIndex: (state:infoState, action: PayloadAction<number>) => {
+            state.currentItemIndex = action.payload;
         },
-        setItem: (state:any, action: PayloadAction<{key: string, item: ItemInfo}>) => {
-            const {key, item} = action.payload;
-            if (state.item != undefined && state.item[key])
-            {
-                state.item[key] = item;
-            }
+        setItem: (state:infoState, action: PayloadAction<ItemInfo>) => {
+            const item = action.payload;
+            if (state.item[state.currentItemIndex] != undefined)
+                state.item[state.currentItemIndex] = item;
         },
-        updateItemField: (state:any, action: PayloadAction<{
-            key: string, 
+        updateItemField: (state:infoState, action: PayloadAction<{
             field: keyof Omit<ItemInfo, 'category'>,
             value: string
         }>) => {
-            const {key, field, value} = action.payload;
-            if (state.item != undefined && key in state.item)
-            {
-                state.item[key][field] = value;
+            const { field, value } = action.payload;
+            if (state.item[state.currentItemIndex] != undefined 
+                    && field in state.item[state.currentItemIndex]) {
+                
+                state.item[state.currentItemIndex] = {
+                    ...state.item[state.currentItemIndex],
+                    [field]: value
+                }
             }
+                
         },
-        setPersonal: (state:any, action: PayloadAction<{key: string, personal: PersonalInfo}>) => {
-            const {key, personal} = action.payload;
+        setPersonal: (state:infoState, action: PayloadAction<PersonalInfo>) => {
+            const personal = action.payload;
             state.personal = personal;
         },
-        updatePersonalField: (state:any, action: PayloadAction<{
+        updatePersonalField: (state:infoState, action: PayloadAction<{
             field: keyof Omit<PersonalInfo, ''>,
             value: string
         }>) => {
@@ -83,6 +83,12 @@ const infoSlice = createSlice({
                 ...state.personal,
                 [field]: value
             }
+        },
+        setApplicationUId: (state: infoState, action: PayloadAction<string>) => {
+            state.applicationUId = action.payload
+        },
+        setStatusId: (state: infoState, action: PayloadAction<string>) => {
+            state.statusId = action.payload
         }
     }
 });
@@ -91,11 +97,13 @@ export const {
     setInitialItem, 
     removeItem, 
     setCategory, 
-    setCurrentItemId,
+    setCurrentItemIndex,
     setItem, 
     updateItemField, 
     setPersonal, 
-    updatePersonalField 
+    updatePersonalField,
+    setApplicationUId,
+    setStatusId
 } = infoSlice.actions;
 
 export default infoSlice.reducer;
