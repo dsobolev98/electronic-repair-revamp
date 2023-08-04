@@ -1,0 +1,37 @@
+{
+    "100": {
+        "Title": "Submitted",
+        "Description": "Your request has been received and will be processed shortly.",
+        "Icon": "faArrowPointer"
+    },
+    "110": {
+        "Title": "Under Review",
+        "Description": "Our team is currently evaluating your submission. You'll be notified once the review is complete.",
+        "Icon": "faQuestion"
+    },
+    "120": {
+        "Title": "In Transit To Repair Facility",
+        "Description": "Your item is on its way to our repair facility. Please wait for further updates.",
+        "Icon": "faShippingFast"
+    },
+    "130": {
+        "Title": "Inspection",
+        "Description": "Your item is being inspected by our professional technicians. We'll let you know once the inspection is complete.",
+        "Icon": "faMagnifyingGlass"
+    },
+    "140": {
+        "Title": "Repair",
+        "Description": "Your item is currently under repair. We'll update you on the progress shortly.",
+        "Icon": "faScrewdriverWrench"
+    },
+    "150": {
+        "Title": "In Transit From Repair Facility",
+        "Description": "Repairs complete! Your item is now on its way back to you. Expect it to arrive soon.",
+        "Icon": "faShippingFast"
+    },
+    "160": {
+        "Title": "Delivered",
+        "Description": "Delivery successful! Your item should now be with you. Thank you for choosing us.",
+        "Icon": "faBox"
+    }
+}

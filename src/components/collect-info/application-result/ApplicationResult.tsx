@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './application-result.module.css'
 import { useAppSelector } from '@/redux/hooks'
-import Data from './data.json'
+import Data from '@/utils/status/decision.json'
 
 function ApplicationResult() {
   const ApplicationUId = useAppSelector((state: any) => state.info.applicationUId as string)
@@ -21,8 +21,8 @@ function ApplicationResult() {
       <p>
         { 
           StatusId  
-            ? Data.StatusScenario[StatusId as keyof typeof Data.StatusScenario].Description 
-              : Data.StatusScenario["100"].Description 
+            ? Data.Decision[StatusId as keyof typeof Data.Decision].Description 
+              : Data.Decision["100"].Description 
         }
       </p>
       <br/>
