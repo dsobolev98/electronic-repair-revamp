@@ -1,0 +1,49 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width:  100%;
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-container hr {
+    margin: 0;
+    padding: 0;
+    width: 24px;
+    border: 2px solid #2c6fbb;
+}
+
+.icon {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-width: 2px;
+}
+
+.completed {
+    border-style: solid;
+    border-color: #2c6fbb;
+}
+
+.uncompleted {
+    /* background-color: white ; */
+    border-style: dashed;
+    border-color: #2c6fbb;
+}
+
+.current {
+    border-width: 3px !important;
+    border-style: solid;
+    border-color: green;
+}
+
