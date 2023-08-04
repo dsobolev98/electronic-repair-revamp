@@ -4,7 +4,7 @@ import { PersonalInfo, personalInfoConfig } from "@/types/PersonalInfo";
 import { ItemInfo, itemInfoConfig } from "@/types/ItemInfo";
 import { connect, disconnect, getNextSequence } from "@/utils/mongodb";
 import { IsModelValid } from "@/utils/validation";
-import InquiryData from '@/models/InquiryData'
+import InquiryData, { InquiryDataInterface } from '@/models/InquiryData'
 
 import { NextRequest, NextResponse } from "next/server";
 
@@ -67,11 +67,13 @@ export async function POST(req: NextRequest) {
         const PersonalData = request.PersonalData as PersonalInfo;
 
         Validate(ItemData, PersonalData);
-        let applicationUId = await SendToDB(ItemData, PersonalData);
+        let inqiury = await SendToDB(ItemData, PersonalData);
+        //Do something in-between. ex: email, get api quote
+        //let statusId = await SendStatusToDB()
 
         const response = {
-            ApplicationUId: applicationUId,
-            StatusId: 100,
+            ApplicationUId: inqiury._id,
+            StatusId: inqiury.StatusId,
             ItemData: ItemData,
             PersonalData: PersonalData
         }
@@ -115,7 +117,7 @@ function Validate(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo) {
     console.log("Validation passed")
 }
 
-async function SendToDB(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo): Promise<string> {
+async function SendToDB(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo): Promise<InquiryDataInterface> {
     console.log("Sending to DB in repair api...")
 
     try {
@@ -123,13 +125,15 @@ async function SendToDB(ItemData: Array<ItemInfo>, PersonalData: PersonalInfo): 
 
         const inquiryData = new InquiryData({
             ApplicationId: await getNextSequence('application'),
+            StatusId: 100,
+            DecisionId: 100,
             ItemData: ItemData,
             PersonalData: PersonalData
         })
 
-        const result = await inquiryData.save();
-        console.log(result.id.toString())
-        return result.id.toString();
+        const result: InquiryDataInterface = await inquiryData.save();
+        console.log(result._id.toString())
+        return result;
     }
     catch (e) {
         console.log("exception in SendToDB function in repair api")
