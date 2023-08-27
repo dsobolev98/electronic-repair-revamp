@@ -1,0 +1,14 @@
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.left {
+    align-items: flex-start;
+    margin-right: auto;
+}
+
+.right {
+    align-items: flex-end;
+    margin-left: auto;
+}
