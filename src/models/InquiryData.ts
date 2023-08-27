@@ -26,7 +26,22 @@ const inquirySchema = new Schema({
         of: {
             [ItemKeys.CATEGORY]: String,
             [ItemKeys.BRAND]: String, 
-            [ItemKeys.MODEL]: String
+            [ItemKeys.MODEL]: String,
+            Part: {
+                type: Array,
+                of: {
+                    Name: String,
+                    Price: Number
+                },
+                required: false
+            },
+            Labor: {
+                type: {
+                    Hours: Number,
+                    Price: Number
+                },
+                required: false
+            }
         },
         required: true
     },
@@ -46,11 +61,23 @@ const inquirySchema = new Schema({
     }
 }, { timestamps: true })
 
-interface ItemInfo extends ItemInfoType {
-    _id: Types.ObjectId
+export interface PartType {
+    Name: string,
+    Price: number
 }
 
-interface PersonalInfo extends PersonalInfoType {
+export interface LaborType {
+    Hours: number,
+    Price: number
+}
+
+export interface ItemInfo extends ItemInfoType {
+    _id: Types.ObjectId,
+    Part: Array<PartType>
+    Labor: LaborType
+}
+
+export interface PersonalInfo extends PersonalInfoType {
     _id: Types.ObjectId
 }
 

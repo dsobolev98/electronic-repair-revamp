@@ -4,6 +4,7 @@ import Counter from "@/models/Counter"
 import InquiryData from "@/models/InquiryData";
 
 let database: Mongoose.Connection;
+let isConnected: Mongoose.ConnectionStates
 
 export const connect = async () => {
     const uri = StringFormat(
@@ -12,23 +13,42 @@ export const connect = async () => {
         process.env.DB_PASSWORD as string
     )
 
-    if (database) {
+    if (database && database.readyState === 1) {
         return;
     }
+
+    if (Mongoose.connections.length > 0) {
+        console.log('There are multiple connections to the db - Connections:' + Mongoose.connections.length)
+        isConnected = Mongoose.connections[0].readyState;
+        if (isConnected === 1) {
+            console.log('Use previous connected connection');
+            return;
+        }
+        await disconnect();
+    }
     
-    await Mongoose.connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    } as Mongoose.ConnectOptions);
+    try {
+        await Mongoose.connect(uri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        } as Mongoose.ConnectOptions);
 
-    database = Mongoose.connection;
-    database.once("open", async () => {
-        console.log("Connected to database");
-    });
+        database = Mongoose.connection
+        isConnected = Mongoose.connection.readyState;
+    }
+    catch (e) {
+        console.log(e)
+        throw e; //OR we can retry
+    }
 
-    database.on("error", () => {
-        console.log("Error connecting to database");
-    });
+    // database.on('error', err => {
+    //     console.log(err);
+    // })
+
+    database.on('disconnected', mes => {
+        database.removeAllListeners();
+        console.log('database disconnected')
+    })
 };
 
 export const disconnect = () => {
