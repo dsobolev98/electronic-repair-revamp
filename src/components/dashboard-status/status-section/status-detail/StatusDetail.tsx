@@ -12,7 +12,7 @@ function StatusDetail({
     const DecisionIdString: string = DecisionId.toString()
     const StatusIdString: string = StatusId.toString()
     
-    const DecisionText = DecisionData.Decision[DecisionIdString as keyof typeof DecisionData.Decision]?.Description
+    const DecisionText = DecisionData[DecisionIdString as keyof typeof DecisionData]?.Description
     const StatusText = StatusData[StatusIdString as keyof typeof StatusData].Description
 
     return (

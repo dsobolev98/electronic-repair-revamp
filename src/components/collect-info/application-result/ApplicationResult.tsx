@@ -19,11 +19,7 @@ function ApplicationResult() {
       </h3>
       <br/><br/>
       <p>
-        { 
-          StatusId  
-            ? Data.Decision[StatusId as keyof typeof Data.Decision].Description 
-              : Data.Decision["100"].Description 
-        }
+        {StatusId ? Data[StatusId as keyof typeof Data].Description : Data["100"].Description}
       </p>
       <br/>
       { //Status cannot be declined
