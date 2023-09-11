@@ -76,14 +76,16 @@ export async function inquiryAction(data: FormData) {
         disconnect()
     }
 
-    console.log(headers())
     const url = new URL(headers().get('referer')?.toString() ?? '')
     if(success) {
+        if (url.searchParams.get("success"))
+            url.searchParams.delete("success")
         console.log('redirect to: ' + url.toString())
         redirect(url.toString())
     }
     else { 
-        url.searchParams.append("success", "false")
+        if (!url.searchParams.get("success"))
+            url.searchParams.append("success", "false")
         console.log(url.toString())
         redirect(url.toString())
     }
@@ -101,7 +103,7 @@ export default async function Admin({
 
     return (
         <div className={styles.container}>
-            {searchParams.success == 'false' && <div>An error has occured, please try again!</div>}
+            {searchParams.success == 'false' && <div className={styles['validation-container']}>An error has occured, please try again!</div>}
             <form action={inquiryAction}>
                 <input type='hidden' name='inquiryUId' value={InquiryUId}/>
                 <div className={styles.row}>
@@ -119,7 +121,9 @@ export default async function Admin({
                     DecisionId={inquiry.DecisionId}
                 /><hr/>
                 <PersonalInfo info={inquiry.PersonalData} /><hr/>
-                <ItemInvoice items={inquiry.ItemData} /><hr/>
+                <ItemInvoice 
+                    itemsProp={JSON.stringify(inquiry.ItemData)} 
+                /><hr/>
             </form>
         </div>
     )

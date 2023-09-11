@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import styles from './item-invoice.module.css'
 import { ItemInfo, PartType } from '@/models/InquiryData'
 import { HTMLAttributes } from '@/app/admin/[id]/attributes'
-import { event } from 'jquery'
 
 export default function ItemInvoice({
     itemsProp
@@ -14,7 +13,6 @@ export default function ItemInvoice({
     const [items, setItems] = useState(JSON.parse(itemsProp) as Array<ItemInfo>)
 
     function addPart(itemIndex: number) {
-        console.log('Trying to add new part for item '+ itemIndex)
         const newPart = {
             Name: '',
             Price: 0.00
@@ -23,21 +21,15 @@ export default function ItemInvoice({
         if (items[itemIndex].Part.length < 8)
             newItems[itemIndex].Part.push(newPart)
         setItems(newItems)
-        console.log('Finished adding new part to state')
-        console.log(items)
     }
 
     function deletePart(itemIndex: number, partIndex: number) {
-        console.log('Delete item ' + itemIndex + ' on part ' + partIndex)
-
         var newPartArray: PartType[] = []
         items[itemIndex].Part.forEach((part, index) => {
             if (partIndex != index) {
                 newPartArray.push(part)
             }
         })
-        console.log(newPartArray)
-
         var newItems = items.slice()
         newItems[itemIndex].Part = newPartArray
         setItems(newItems)

@@ -8,15 +8,13 @@ export function mapItemFormDataToItemData(
 ): Array<ItemInfo> {
     //We will add a limit of 8 parts later
     const numberOfItems = inquiry.ItemData.length
-    console.log(numberOfItems)
     inquiry.ItemData.forEach((item, itemIndex) => {
         for(let partIndex = 0; partIndex < 8; partIndex++) {
             const partName: string = data.get(itemIndex + HTMLAttributes.PartName + partIndex)?.toString() ?? ''
             const partPrice: string = data.get(itemIndex + HTMLAttributes.PartPrice + partIndex)?.toString() ?? ''
-
             // When partName will be available to edit, then add it here too.. 
             // But think of names where once entered, and then removed corner case..
-            if (partPrice) {  
+            if (partName && partPrice) {  
                 //Logic to add part if not available.
                 if (partIndex in inquiry.ItemData[itemIndex].Part) {
                     inquiry.ItemData[itemIndex].Part[partIndex].Name = partName
