@@ -1,0 +1,15 @@
+.row {
+    display: flex;
+    flex-direction: row;
+    padding-top: 5px;
+}
+
+.left {
+    align-items: flex-start;
+    margin-right: auto;
+}
+
+.right {
+    align-items: flex-end;
+    margin-left: auto;
+}

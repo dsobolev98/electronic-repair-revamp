@@ -1,0 +1,30 @@
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.left {
+    align-items: flex-start;
+    margin-right: auto;
+}
+
+.right {
+    align-items: flex-end;
+    margin-left: auto;
+}
+
+.status-dropdown-section {
+    padding-top: 25px;
+}
+
+.status-dropdown-section label h3 {
+    margin: 0;
+    text-align: center;
+}
+
+.dropdown {
+    width: 250px;
+    text-align: center;
+
+    border-radius: 5px;
+}
